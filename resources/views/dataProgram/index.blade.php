@@ -34,7 +34,7 @@
                 <!-- Header Section -->
                 <div class="flex items-center justify-between px-4 mt-4 text-blue-950">
                     <!-- Judul -->
-                    <h1 class="text-xl font-semibold whitespace-nowrap">Data Program Bantuan</h1>
+                    <h1 class="text-xl font-semibold whitespace-nowrap">Data Keikutsertaan Program, Kepemilikan Aset dan Layanan</h1>
 
                     <!-- Filter dan Pencarian -->
                     <div class="flex items-center space-x-4">
@@ -53,7 +53,7 @@
                                         <option value="Daratan 1" {{ request('padukuhan') == 'Daratan 1' ? 'selected' : '' }}>Daratan 1</option>
                                         <option value="Daratan 2" {{ request('padukuhan') == 'Daratan 2' ? 'selected' : '' }}>Daratan 2</option>
                                         <option value="Daratan 3" {{ request('padukuhan') == 'Daratan 3' ? 'selected' : '' }}>Daratan 3</option>
-                                        <option value="Jonggaran" {{ request('padukuhan') == 'Jonggaran' ? 'selected' : '' }}>Jonggaran</option>
+                                        <option value="Jonggaran" {{ request('padukuhan') == 'Jonggrangan' ? 'selected' : '' }}>Jonggrangan</option>
                                         <option value="Soromintan" {{ request('padukuhan') == 'Soromintan' ? 'selected' : '' }}>Soromintan</option>
                                         <option value="Kerdan" {{ request('padukuhan') == 'Kerdan' ? 'selected' : '' }}>Kerdan</option>
                                         <option value="Kebitan" {{ request('padukuhan') == 'Kebitan' ? 'selected' : '' }}>Kebitan</option>
@@ -106,7 +106,7 @@
                         <!-- Form Tambah Data -->
                         <form>
                             @csrf
-                            <a href="" class="flex items-center px-4 py-2 space-x-2 text-xs font-semibold text-white transition duration-200 bg-blue-500 rounded-lg hover:bg-blue-600">
+                            <a href="{{ route('program.create') }}" class="flex items-center px-4 py-2 space-x-2 text-xs font-semibold text-white transition duration-200 bg-blue-500 rounded-lg hover:bg-blue-600">
                                 <span>Tambah Data</span>
                                 <span class="items-center justify-center inline-block w-4 h-4 text-blue-500 bg-white rounded-full">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -117,10 +117,10 @@
                         </form>
 
                         <!-- Form Unduh Data -->
-                        <form id="downloadForm" action="" method="GET" target="_blank">
+                        <form id="downloadForm" action="{{ route('program.export') }}" method="GET" target="_blank">
                             <button
                                 id="downloadButton"
-                                type="button"
+                                type="submit"
                                 class="flex items-center px-4 py-2 space-x-2 text-xs font-semibold text-white transition duration-200 bg-green-500 rounded-lg hover:bg-green-600"
                             >
                                 <span>Export XLSX</span>
@@ -141,6 +141,7 @@
                                 <tr>
                                     <th class="px-4 py-3 text-xs font-medium tracking-wider text-center text-black break-words">No</th>
                                     <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">Nomor Kartu Keluarga</th>
+                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">Nama Kepala Keluarga</th>
                                     <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">
                                         Jenis Program yang Diterima
                                     </th>
@@ -158,19 +159,36 @@
                                     <!-- Data Lain -->
                                     <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataProgram->NomorKK }}</td>
                                     <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataProgram->NamaKepalaKeluarga }}</td>
-                                    <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataProgram->program->NamaProgram ?? 'Tidak ada program' }}</td>
+                                    <td class="px-6 py-4 text-xs font-medium text-left text-black whitespace-nowrap">
+                                        <ul class="pl-4 list-disc">
+                                            @foreach ([
+                                                'ProgramBantuanSembako' => 'Program Bantuan Sosial Sembako/BPNT',
+                                                'ProgramPKH' => 'Program Keluarga Harapan (PKH)',
+                                                'ProgramBLT' => 'Program Bantuan Langsung Tunai (BLT) Desa',
+                                                'ProgramSubsidiListrik' => 'Program Subsidi Listrik',
+                                                'ProgramBantuanPemda' => 'Program Bantuan Pemerintah Daerah',
+                                                'ProgramSubsidiPupuk' => 'Program Subsidi Pupuk',
+                                                'ProgramSubsidiLPG' => 'Program Subsidi LPG'
+                                            ] as $column => $programName)
+                                                @if ($dataProgram->$column == 'Ya')
+                                                    <li>{{ $programName }}</li>
+                                                @endif
+                                            @endforeach
+                                        </ul>
+                                    </td>
+
                                     <!-- Aksi -->
                                     <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">
                                         <div class="flex justify-center gap-2">
                                             <!-- Tombol Edit -->
-                                            <a href="" class="p-1 text-blue-500 hover:text-blue-700">
+                                            <a href="{{ route('program.edit', $dataProgram) }}" class="p-1 text-blue-500 hover:text-blue-700">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                                                 </svg>
                                             </a>
 
                                             <!-- Tombol Hapus -->
-                                            <form method="POST" action="" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                            <form method="POST" action="{{ route('program.destroy', $dataProgram) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="p-1 text-red-500 hover:text-red-700">

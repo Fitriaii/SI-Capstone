@@ -59,7 +59,7 @@
                                         <option value="Daratan 1" {{ request('padukuhan') == 'Daratan 1' ? 'selected' : '' }}>Daratan 1</option>
                                         <option value="Daratan 2" {{ request('padukuhan') == 'Daratan 2' ? 'selected' : '' }}>Daratan 2</option>
                                         <option value="Daratan 3" {{ request('padukuhan') == 'Daratan 3' ? 'selected' : '' }}>Daratan 3</option>
-                                        <option value="Jonggaran" {{ request('padukuhan') == 'Jonggaran' ? 'selected' : '' }}>Jonggaran</option>
+                                        <option value="Jonggaran" {{ request('padukuhan') == 'Jonggrangan' ? 'selected' : '' }}>Jonggrangan</option>
                                         <option value="Soromintan" {{ request('padukuhan') == 'Soromintan' ? 'selected' : '' }}>Soromintan</option>
                                         <option value="Kerdan" {{ request('padukuhan') == 'Kerdan' ? 'selected' : '' }}>Kerdan</option>
                                         <option value="Kebitan" {{ request('padukuhan') == 'Kebitan' ? 'selected' : '' }}>Kebitan</option>

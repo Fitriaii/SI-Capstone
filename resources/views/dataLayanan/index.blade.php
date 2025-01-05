@@ -4,19 +4,13 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>Data Kondisi Rumah</title>
+        <title>Data Layanan</title>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
         <!-- Styles / Scripts -->
-        @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-            @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @else
-            <style>
-                /* Tailwind CSS auto-generated styles here */
-            </style>
-        @endif
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-blue-100 ">
 
@@ -40,12 +34,12 @@
                 <!-- Header Section -->
                 <div class="flex items-center justify-between px-4 mt-4 text-blue-950">
                     <!-- Judul -->
-                    <h1 class="text-xl font-semibold whitespace-nowrap">Data Kependudukan</h1>
+                    <h1 class="text-xl font-semibold whitespace-nowrap">Data Keikutsertaan Program, Kepemilikan Aset dan Layanan</h1>
 
                     <!-- Filter dan Pencarian -->
                     <div class="flex items-center space-x-4">
                         <!-- Filter Padukuhan -->
-                        <form id="filterForm" action="{{ route('bangunan.index') }}" method="GET">
+                        <form id="filterForm" action="{{ route('layanan.index') }}" method="GET">
                             <div class="flex items-center space-x-4">
                                 <!-- Filter Padukuhan -->
                                 <div>
@@ -112,7 +106,7 @@
                         <!-- Form Tambah Data -->
                         <form>
                             @csrf
-                            <a href="/data-kondisi-rumah/create" class="flex items-center px-4 py-2 space-x-2 text-xs font-semibold text-white transition duration-200 bg-blue-500 rounded-lg hover:bg-blue-600">
+                            <a href="{{ route('layanan.create') }}" class="flex items-center px-4 py-2 space-x-2 text-xs font-semibold text-white transition duration-200 bg-blue-500 rounded-lg hover:bg-blue-600">
                                 <span>Tambah Data</span>
                                 <span class="items-center justify-center inline-block w-4 h-4 text-blue-500 bg-white rounded-full">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -123,7 +117,7 @@
                         </form>
 
                         <!-- Form Unduh Data -->
-                        <form id="downloadForm" action="{{ route('bangunan.export') }}" method="GET" target="_blank">
+                        <form id="downloadForm" action="{{ route('layanan.export') }}" method="GET" target="_blank">
                             <button
                                 id="downloadButton"
                                 type="submit"
@@ -147,47 +141,37 @@
                                 <tr>
                                     <th class="px-4 py-3 text-xs font-medium tracking-wider text-center text-black break-words">No</th>
                                     <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">Nomor Kartu Keluarga</th>
-                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">
-                                        Status Kepemilikan<br>Bangunan Tempat Tinggal
-                                    </th>
-                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">
-                                        Luas Lantai<br>Bangunan Tempat Tinggal
-                                    </th>
-                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">
-                                        Sumber Air<br>Minum Utama
-                                    </th>
-                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">
-                                        Sumber<br>Penerangan Utama
-                                    </th>
+                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">Nama Kepala Keluarga</th>
+                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">Jenis Akses Internet Utama</th>
+                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">Kepemilikan Rekening Aktif</th>
                                     <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">Aksi</th>
                                 </tr>
                             </thead>
 
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse($bangunan as $dataBangunan)
+                                @forelse($layanan as $dataLayanan)
                                 <tr>
                                     <!-- Nomor Urut -->
                                     <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">
-                                        {{ ($bangunan->currentPage() - 1) * $bangunan->perPage() + $loop->iteration }}
+                                        {{ ($layanan->currentPage() - 1) * $layanan->perPage() + $loop->iteration }}
                                     </td>
                                     <!-- Data Lain -->
-                                    <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataBangunan->NomorKK }}</td>
-                                    <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataBangunan->StatusKepemilikanBangunan }}</td>
-                                    <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataBangunan->LuasLantai }}</td>
-                                    <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataBangunan->SumberAirMinum }}</td>
-                                    <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataBangunan->SumberPeneranganUtama }}</td>
+                                    <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataLayanan->NomorKK }}</td>
+                                    <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataLayanan->NamaKepalaKeluarga }}</td>
+                                    <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataLayanan->JenisAksesInternet }}</td>
+                                    <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataLayanan->KepemilikanRekeningEWallet }}</td>
                                     <!-- Aksi -->
                                     <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">
                                         <div class="flex justify-center gap-2">
                                             <!-- Tombol Edit -->
-                                            <a href="{{ route('bangunan.edit', $dataBangunan) }}" class="p-1 text-blue-500 hover:text-blue-700">
+                                            <a href="{{ route('layanan.edit', $dataLayanan) }}" class="p-1 text-blue-500 hover:text-blue-700">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                                                 </svg>
                                             </a>
 
                                             <!-- Tombol Hapus -->
-                                            <form method="POST" action="{{ route('bangunan.destroy', $dataBangunan) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                            <form method="POST" action="{{ route('layanan.destroy', $dataLayanan) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="p-1 text-red-500 hover:text-red-700">
@@ -211,7 +195,7 @@
 
                     <!-- Navigasi Paginasi -->
                     <div class="mt-4">
-                        {{ $bangunan->links('components.pagination') }}
+                        {{ $layanan->links('components.pagination') }}
                     </div>
 
 

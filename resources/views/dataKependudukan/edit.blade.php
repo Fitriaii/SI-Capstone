@@ -85,7 +85,8 @@
                                                 type="text"
                                                 id="Provinsi"
                                                 name="Provinsi"
-                                                value="{{ old('Provinsi', isset($dataKeluarga) ? $dataKeluarga->Provinsi : '') }}"
+                                                value="{{ old('Provinsi', 'DI Yogyakarta') }}"
+                                                readonly
                                                 class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
                                             >
                                             @error('Provinsi')
@@ -124,7 +125,8 @@
                                                 type="text"
                                                 id="Kabupaten"
                                                 name="Kabupaten"
-                                                value="{{ old('Kabupaten', isset($dataKeluarga) ? $dataKeluarga->Kabupaten : '') }}"
+                                                value="{{ old('Kabupaten', 'Sleman') }}"
+                                                readonly
                                                 class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
                                             >
                                             @error('Kabupaten')
@@ -163,7 +165,8 @@
                                                 type="text"
                                                 id="Kecamatan"
                                                 name="Kecamatan"
-                                                value="{{ old('Kecamatan', isset($dataKeluarga) ? $dataKeluarga->Kecamatan : '') }}"
+                                                value="{{ old('Kecamatan', 'Minggir') }}"
+                                                readonly
                                                 class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
                                             >
                                             @error('Kecamatan')
@@ -202,7 +205,8 @@
                                                 type="text"
                                                 id="Kalurahan"
                                                 name="Kalurahan"
-                                                value="{{ old('Kalurahan', isset($dataKeluarga) ? $dataKeluarga->Kalurahan : '') }}"
+                                                value="{{ old('Kalurahan', 'Sendangarum') }}"
+                                                readonly
                                                 class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
                                             >
                                             @error('Kalurahan')
@@ -246,7 +250,7 @@
                                                 <option value="Daratan 1" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Daratan 1' ? 'selected' : '' }}>Daratan 1</option>
                                                 <option value="Daratan 2" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Daratan 2' ? 'selected' : '' }}>Daratan 2</option>
                                                 <option value="Daratan 3" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Daratan 3' ? 'selected' : '' }}>Daratan 3</option>
-                                                <option value="Jonggaran" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Jonggaran' ? 'selected' : '' }}>Jonggaran</option>
+                                                <option value="Jonggaran" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Jonggrangan' ? 'selected' : '' }}>Jonggrangan</option>
                                                 <option value="Soromintan" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Soromintan' ? 'selected' : '' }}>Soromintan</option>
                                                 <option value="Kerdan" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Kerdan' ? 'selected' : '' }}>Kerdan</option>
                                                 <option value="Kebitan" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Kebitan' ? 'selected' : '' }}>Kebitan</option>

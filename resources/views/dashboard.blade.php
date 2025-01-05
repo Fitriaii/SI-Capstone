@@ -6,7 +6,8 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-blue-100">
@@ -31,13 +32,13 @@
         <!-- Main Content -->
         <div class="flex-1">
             <!-- Header -->
-            <header class="flex items-center justify-between p-8 text-blue-950">
+            <header class="flex items-center justify-between px-8 py-4 text-blue-950">
                 <h1 class="text-xl font-semibold">Dashboard</h1>
             </header>
 
             <!-- Dashboard Content -->
             <div class="px-8">
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div class="grid grid-cols-1 gap-6 py-4 md:grid-cols-2 lg:grid-cols-3">
                     <!-- Card: Jumlah Kartu Keluarga -->
                     <div class="flex items-center p-4 bg-white rounded-lg shadow">
                         <div class="p-4 rounded">
@@ -67,111 +68,291 @@
                         </div>
                         <div class="ml-4">
                             <h2 class="text-lg font-semibold text-gray-700">Jumlah Penerima Bantuan</h2>
-                            <p class="text-2xl font-bold">30</p>
+                            <p class="text-2xl font-bold">{{ $totalPenerimaBantuan }}</p>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Charts Section -->
-            <div class="p-8">
-                <div class="grid grid-cols-1 gap-6">
-                    <!-- Chart: Data Kepemilikan Rumah -->
+                <div class="grid grid-cols-1 gap-6 py-4">
+                    <!-- Chart: Jumlah Kartu Keluarga -->
                     <div class="p-4 bg-white rounded-lg shadow">
+                        <p class="text-sm text-gray-500">Tiap Padukuhan</p>
                         <h3 class="mb-4 text-lg font-semibold text-blue-950">Jumlah Kartu Keluarga</h3>
-                        <canvas id="chart1"></canvas>
+                        <canvas id="jumlahKeluargaChart" class="p-4 bg-white rounded-lg shadow" style="height: 400px;max-height: 400px;"></canvas> <!-- Ganti canvas dengan div -->
+                    </div>
+                </div>
+
+                <div class="flex py-4 space-x-4">
+                    <!-- Data Kepemilikan Rumah -->
+                    <div class="w-1/3 p-4 bg-white rounded-lg shadow">
+                        <p class="text-sm text-gray-500">Status</p>
+                        <h3 class="mb-4 text-lg font-semibold text-blue-950">Data Kepemilikan Rumah</h3>
+                        <div class="relative h-48"> <!-- Gunakan `relative` dan tinggi yang konsisten -->
+                            <canvas id="SatusRumahChart" class="bg-white rounded-lg shadow"></canvas>
+                        </div>
                     </div>
 
-                    {{-- <!-- Chart: Data Kepemilikan Aset -->
-                    <div class="p-4 bg-white rounded-lg shadow">
-                        <h3 class="mb-4 text-lg font-semibold text-blue-950">Data Kepemilikan Aset</h3>
-                        <canvas id="chart2"></canvas>
-                    </div> --}}
+                    <!-- Jumlah Keluarga Penerima Bantuan -->
+                    <div class="w-2/3 p-4 bg-white rounded-lg shadow">
+                        <p class="text-sm text-gray-500">Statistik</p>
+                        <h3 class="mb-4 text-lg font-semibold text-blue-950">Jumlah Keluarga Penerima Bantuan</h3>
+                        <div class="relative h-96"> <!-- Tinggi lebih besar untuk chart kedua -->
+                            <canvas id="JumlahBantuanChart" class="bg-white rounded-lg shadow"></canvas>
+                        </div>
+                    </div>
                 </div>
+
             </div>
+
         </div>
     </div>
 
 
     <!-- Script untuk grafik -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
+
     <script>
-        const ctx1 = document.getElementById('chart1').getContext('2d');
+        // Data dari backend (diubah menjadi JSON)
+        const jumlahKeluargaPerPadukuhan = @json($jumlahKeluargaPerPadukuhan);
+        const padukuhanLabels = [
+            'Daratan 1', 'Daratan 2', 'Daratan 3', 'Jonggrangan', 'Soromintan', 'Kerdan',
+            'Kebitan', 'Tinggen', 'Sanan', 'Klodran', 'Ngijon', 'Blantikan', 'Toglengan', 'Singojayan'
+        ];
 
-        // Data dari server
-        const labels = @json($allPadukuhan); // Nama padukuhan
-        const data = @json($data->pluck('jumlah_keluarga')); // Jumlah keluarga
+        const jumlahKeluargaData = padukuhanLabels.map(function(padukuhan) {
+        // Mencocokkan nama padukuhan dengan data yang ada di database
+            const padukuhanData = jumlahKeluargaPerPadukuhan.find(function(item) {
+                return item.Padukuhan === padukuhan; // Pencocokan berdasarkan nama padukuhan
+            });
 
-        // Inisialisasi grafik
-        new Chart(ctx1, {
-            type: 'bar',
-            data: {
-                labels: labels, // Nama padukuhan sebagai label
-                datasets: [{
-                    label: 'Jumlah Keluarga',
-                    data: data, // Data jumlah keluarga
-                    backgroundColor: 'rgba(54, 162, 235, 0.8)', // Warna batang grafik
-                    borderColor: 'rgba(54, 162, 235, 1)', // Warna garis tepi
-                    borderWidth: 1 // Ketebalan garis tepi
-                }]
-            },
-            options: {
-                responsive: true, // Grafik responsif
-                plugins: {
-                    legend: {
-                        display: true, // Tampilkan label dataset
-                        position: 'top' // Posisi legend
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `Jumlah Keluarga: ${context.raw}`;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Padukuhan' // Judul sumbu X
-                        },
-                        ticks: {
-                            callback: function(value, index) {
-                                // Tampilkan nama padukuhan secara penuh
-                                return labels[index];
-                            },
-                            maxRotation: 45, // Rotasi maksimal 45 derajat
-                            minRotation: 45, // Rotasi minimal 45 derajat
-                            autoSkip: false // Jangan melewatkan label
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Jumlah Keluarga' // Judul sumbu Y
-                        },
-                        beginAtZero: true // Mulai dari 0
-                    }
-                }
-            }
+            // Jika padukuhan ditemukan, ambil jumlah keluarga, jika tidak, set menjadi 0
+            return padukuhanData ? padukuhanData.jumlah_keluarga : 0;
         });
 
 
-        // const ctx2 = document.getElementById('chart2').getContext('2d');
-        // new Chart(ctx2, {
-        //     type: 'bar',
-        //     data: {
-        //         labels: ['Milik Sendiri', 'Kontrak/Sewa', 'Bebas Sewa', 'Dinas', 'Lainnya'],
-        //         datasets: [{
-        //             label: 'Jumlah',
-        //             data: [50, 20, 25, 30, 10],
-        //             backgroundColor: 'rgba(54, 162, 235, 0.8)',
-        //         }]
-        //     }
-        // });
+        const rumahData = @json($jumlahKeluargaPerStatus);
+        const statusLabels = ['Milik sendiri', 'Kontrak/sewa', 'Bebas Sewa', 'Dinas', 'Lainnya'];
+        const statusRumah = statusLabels.map(function(status){
 
+            const statusRumahData = rumahData.find(function(item){
+                return item.StatusKepemilikanBangunan === status;
+            })
+
+            return statusRumahData ? statusRumahData.status_rumah : 0;
+        });
+
+        const jumlahPenerimaBantuan = @json($jumlahPenerimaBantuan);
+        // Mengambil label (NomorKK) dan data jumlah penerima bantuan
+        const labelsBantuan = [
+            'Program Bantuan Sosial Sembako/BPNT', 'Program Bantuan Pemerintah Daerah', 'Program Keluarga Harapan (PKH)',
+            'Program Subsidi Pupuk', 'Program Bantuan Langsung Tunai (BLT) Desa','Program Subsidi LPG','Program Subsidi Listrik'
+        ];
+        const dataBantuan = labelsBantuan.map(label => jumlahPenerimaBantuan[label] || 0);
+
+        let chartInstance;
+
+        // Fungsi untuk membuat chart jumlah keluarga
+        function createJumlahKeluargaChart() {
+            const ctx = document.getElementById('jumlahKeluargaChart').getContext('2d');
+
+            // Hapus instance Chart.js sebelumnya, jika ada
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // Variabel untuk menyimpan indeks bar yang sedang di-hover
+            let hoveredIndex = null;
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: padukuhanLabels,
+                    datasets: [
+                        {
+                            label: 'Jumlah Keluarga',
+                            data: jumlahKeluargaData,
+                            backgroundColor: '#93c5fd',
+                            hoverBackgroundColor: '#172554',
+                            borderRadius: 5,
+                            barThickness: 30,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                            position: 'top',
+                        },
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 10,
+                                font: {
+                                    size: 10,
+                                },
+                            },
+                            grid: {
+                                borderDash: [5, 5], // Garis putus-putus
+                            },
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 10,
+                                    weight: function (context) {
+                                        // Tebal jika indeks sesuai dengan hoveredIndex
+                                        return hoveredIndex === context.index ? 'bold' : 'normal';
+                                    },
+                                },
+                            },
+                            barPercentage: 0.3, // Lebar bar lebih kecil
+                            categoryPercentage: 0.5,
+                            grid: {
+                                display: false, // Tidak menampilkan garis vertikal
+                            },
+                        },
+                    },
+                    onHover: (event, elements) => {
+                        if (elements.length > 0) {
+                            // Ambil indeks bar yang sedang di-hover
+                            hoveredIndex = elements[0].index;
+                        } else {
+                            // Reset jika kursor tidak di atas bar
+                            hoveredIndex = null;
+                        }
+                        // Perbarui chart
+                        chartInstance.update();
+                    },
+                },
+            });
+        }
+
+        // Fungsi untuk membuat chart status rumah
+        function createStatusRumahChart() {
+            const ctx = document.getElementById('SatusRumahChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        label: 'Jumlah',
+                        data: statusRumah,
+                        backgroundColor: '#93c5fd',
+                        hoverBackgroundColor: '#172554',
+                        borderRadius: 5,
+                        barThickness: 20,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Horizontal bar chart
+                    responsive: true,
+                    scales: {
+                        x: {
+
+                            ticks: {
+                                stepSize: 10,
+                                color: '#666'
+                            },
+                            grid: {
+                                display: false,
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#333',
+                            },
+                            grid: {
+                                display: false,
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `Jumlah: ${context.raw}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Panggil fungsi untuk membuat chart jumlah bantuan
+        function createJumlahBantuanChart() {
+            const ctx = document.getElementById('JumlahBantuanChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labelsBantuan,
+                    datasets: [{
+                        label: 'Jumlah',
+                        data: dataBantuan,
+                        backgroundColor: '#93c5fd',
+                        hoverBackgroundColor: '#172554',
+                        borderRadius: 5,
+                        barThickness: 20,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Horizontal bar chart
+                    responsive: true,
+                    scales: {
+                        x: {
+                            ticks: {
+                                stepSize: 10,
+                                color: '#666'
+                            },
+                            grid: {
+                                display: false,
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#333',
+                            },
+                            grid: {
+                                display: false,
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `Jumlah: ${context.raw}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+        }
+
+
+        // Panggil fungsi untuk membuat chart
+        createJumlahKeluargaChart();
+        createStatusRumahChart();
+        createJumlahBantuanChart();
     </script>
+
+
+
 </body>
 
 </html>

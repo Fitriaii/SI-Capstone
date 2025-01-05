@@ -152,7 +152,7 @@
                                             >
                                                 <option value="" disabled selected>Pilih Status Kepemilikan</option>
                                                 <option value="Milik sendiri">1. Milik sendiri</option>
-                                                <option value="Kontrak">2. Kontrak</option>
+                                                <option value="Kontrak/sewa">2. Kontrak/Sewa</option>
                                                 <option value="Bebas Sewa">3. Bebas Sewa</option>
                                                 <option value="Dinas">4. Dinas</option>
                                                 <option value="Lainnya">5. Lainnya</option>
@@ -179,7 +179,8 @@
                                                 <option value="SHM atas nama anggota keluarga">1. SHM atas nama anggota keluarga</option>
                                                 <option value="SHM bukan anggota keluarga dengan perjanjian pemanfaatan tertulis">2. SHM bukan anggota keluarga dengan perjanjian pemanfaatan tertulis</option>
                                                 <option value="SHM bukan a.n anggota keluarga tanpa perjanjian pemanfaatan tertulis">3. SHM bukan a.n anggota keluarga tanpa perjanjian pemanfaatan tertulis</option>
-                                                <option value="Sertifikat selain SHM(SHGB, SHSRS, Surat lainnya)">4. Sertifikat selain SHM (SHGB, SHSRS, Surat lainnya)</option>
+                                                <option value="Sertifikat selain SHM(SHGB, SHSRS)">4. Sertifikat selain SHM(SHGB, SHSRS)</option>
+                                                <option value="Surat Bukti Lainnya (Girik,Letter C, dll)">4. Surat Bukti Lainnya (Girik,Letter C, dll)</option>
                                                 <option value="Tidak punya">5. Tidak punya</option>
                                             </select>
                                             @error('BuktiKepemilikan')
@@ -221,11 +222,11 @@
                                                 <option value="" disabled selected>Pilih Jenis Lantai</option>
                                                 <option value="Marmer/granit">1. Marmer/granit</option>
                                                 <option value="Keramik">2. Keramik</option>
-                                                <option value="Parket/karpet">3. Parket/karpet</option>
-                                                <option value="Ubin">4. Ubin</option>
-                                                <option value="Kayu">5. Kayu</option>
-                                                <option value="Semen">6. Semen</option>
-                                                <option value="Bamboo">7. Bamboo</option>
+                                                <option value="Parket/vinil/karpet">3. Parket/vinil/karpet</option>
+                                                <option value="Ubin/tegel/teraso">4. Ubin/tegel/teraso</option>
+                                                <option value="Kayu/papan">5. Kayu/papan</option>
+                                                <option value="Semen/bata merah">6. Semen/bata merah</option>
+                                                <option value="Bambu">7. Bambu</option>
                                                 <option value="Tanah">8. Tanah</option>
                                                 <option value="Lainnya">9. Lainnya</option>
                                             </select>
@@ -252,7 +253,7 @@
                                                 <option value="" disabled selected>Pilih Jenis Dinding</option>
                                                 <option value="Tembok">1. Tembok</option>
                                                 <option value="Plesteran anyaman bambu/kawat">2. Plesteran anyaman bambu/kawat</option>
-                                                <option value="Kayu/papan/gypsum/GRC">3. Kayu/papan/gypsum/GRC</option>
+                                                <option value="Kayu/papan/gypsum/GRC/calciboard">3. Kayu/papan/gypsum/GRC/calciboard</option>
                                                 <option value="Anyaman bambu">4. Anyaman bambu</option>
                                                 <option value="Batang kayu">5. Batang kayu</option>
                                                 <option value="Bambu">6. Bambu</option>
@@ -282,7 +283,7 @@
                                                 <option value="Asbes">4. Asbes</option>
                                                 <option value="Bambu">5. Bambu</option>
                                                 <option value="Kayu">6. Kayu</option>
-                                                <option value="Jerami/ijuk/daun">7. Jerami/ijuk/daun</option>
+                                                <option value="Jerami/ijuk/daun-daunan/rumbia">7. Jerami/ijuk/daun-daunan/rumbia</option>
                                                 <option value="Lainnya">8. Lainnya</option>
                                             </select>
                                             @error('JenisAtapTerluas')
@@ -367,9 +368,10 @@
                                                 onchange="toggleMeteranInputs()"
                                             >
                                                 <option value="" class="text-gray-500" disabled selected>Pilih Sumber Penerangan Utama</option>
-                                                <option value="PLN">1. PLN</option>
-                                                <option value="Non PLN">2. Non PLN</option>
-                                                <option value="Lainnya">3. Lainnya</option>
+                                                <option value="Listrik PLN dengan meteran">1. Listrik PLN dengan meteran</option>
+                                                <option value="Listrik PLN tanpa meteran">2. Listrik PLN tanpa meteran</option>
+                                                <option value="Listrik Non PLN">3. Listrik Non PLN</option>
+                                                <option value="Bukan Listrik">4. Bukan Listrik</option>
                                             </select>
                                             @error('SumberPeneranganUtama')
                                                 <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
@@ -454,7 +456,7 @@
                                                 <option value="Gas Elpiji 5 kg/blue gas">2. Gas Elpiji 5 kg/blue gas</option>
                                                 <option value="Gas Elpiji 12 kg">3. Gas Elpiji 12 kg</option>
                                                 <option value="Gas Elpiji 3 kg">4. Gas Elpiji 3 kg</option>
-                                                <option value="Gas Meteran GPN">5. Gas Meteran GPN</option>
+                                                <option value="Gas kota/Meteran GPN">5. Gas Meteran GPN</option>
                                                 <option value="Biogas">6. Biogas</option>
                                                 <option value="Minyak Tanah">7. Minyak Tanah</option>
                                                 <option value="Breket">8. Breket</option>
@@ -481,11 +483,11 @@
                                                 class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
                                             >
                                                 <option value="" class="text-gray-500" disabled selected>Pilih Tempat Pembuangan Akhir Tinja</option>
-                                                <option value="Septik tank">1. Septik tank</option>
+                                                <option value="Tangki septik">1. Tangki septik</option>
                                                 <option value="IPAL">2. IPAL</option>
-                                                <option value="Kolam/Sungai">3. Kolam/Sungai</option>
+                                                <option value="Kolam/sawah/Sungai/danau/laut">3. Kolam/sawah/Sungai/danau/laut</option>
                                                 <option value="Lubang tanah">4. Lubang tanah</option>
-                                                <option value="Tanah Lapang/Kebun">5. Tanah Lapang/Kebun</option>
+                                                <option value="Pantai/tanah lapang/kebun">5. Pantai/tanah lapang/kebun</option>
                                                 <option value="Lainnya">6. Lainnya</option>
                                             </select>
                                             @error('TempatPembuanganAkhirTinja')
@@ -602,7 +604,7 @@
                 const meteran2 = document.getElementById('Meteran2');
                 const meteran3 = document.getElementById('Meteran3');
 
-                if (sumberPenerangan === "PLN") {
+                if (sumberPenerangan === "Listrik PLN dengan meteran") {
                     meteran1.disabled = false;
                     meteran2.disabled = false;
                     meteran3.disabled = false;

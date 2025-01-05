@@ -5,6 +5,7 @@ use App\Http\Controllers\DataAsetController;
 use App\Http\Controllers\DataKepemilikanAsetController;
 use App\Http\Controllers\DataKependudukanController;
 use App\Http\Controllers\DataKondisiRumahController;
+use App\Http\Controllers\DataLayananController;
 use App\Http\Controllers\DataProgramController;
 use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
@@ -39,13 +40,30 @@ Route::middleware('auth')->group(function () {
 
     // --- Data Program ---
     Route::get('/programbantuan',[DataProgramController::class,'index'])->name('program.index');
+    Route::get('/programbantuan/create',[DataProgramController::class,'create'])->name('program.create');
+    Route::post('/add-programbantuan',[DataProgramController::class,'store'])->name('program.store');
+    Route::get('/programbantuan/{dataProgram}/edit',[DataProgramController::class,'edit'])->name('program.edit');
+    Route::patch('/programbantuan/{dataProgram}',[DataProgramController::class,'update'])->name('program.update');
+    Route::delete('/delete-programbantuan/{dataProgram}',[DataProgramController::class,'destroy'])->name('program.destroy');
+    Route::get('/export-programbantuan',[ExportController::class,'exportDataProgram'])->name('program.export');
 
     // --- Data Aset ---
     Route::get('/aset',[DataAsetController::class,'index'])->name('aset.index');
-    Route::get('/aset/create', function () {
-        return view('dataAset.create');
-    })->name('aset.create');
+    Route::get('/aset/create', [DataAsetController::class, 'create'])->name('aset.create');
+    Route::post('/add-aset', [DataAsetController::class, 'store'])->name('aset.store');
+    Route::get('/aset/{dataAset}/edit', [DataAsetController::class, 'edit'])->name('aset.edit');
+    Route::patch('/aset/{dataAset}', [DataAsetController::class, 'update'])->name('aset.update');
+    Route::delete('/delete-aset/{dataAset}', [DataAsetController::class, 'destroy'])->name('aset.destroy');
+    Route::get('/export-aset', [ExportController::class, 'exportDataAset'])->name('aset.export');
 
+    // --- Data Layanan Rekening & E-Wallet ---
+    Route::get('/layanan',[DataLayananController::class,'index'])->name('layanan.index');
+    Route::get('/layanan/create',[DataLayananController::class,'create'])->name('layanan.create');
+    Route::post('/add-layanan',[DataLayananController::class,'store'])->name('layanan.store');
+    Route::get('/layanan/{dataLayanan}/edit',[DataLayananController::class,'edit'])->name('layanan.edit');
+    Route::patch('/layanan/{dataLayanan}',[DataLayananController::class,'update'])->name('layanan.update');
+    Route::delete('/delete-layanan/{dataLayanan}',[DataLayananController::class,'destroy'])->name('layanan.destroy');
+    Route::get('/export-layanan',[ExportController::class,'exportDataLayanan'])->name('layanan.export');
 });
 
 require __DIR__.'/auth.php';

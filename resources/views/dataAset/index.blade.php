@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>Data Program Bantuan</title>
+        <title>Data Aset</title>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -34,7 +34,7 @@
                 <!-- Header Section -->
                 <div class="flex items-center justify-between px-4 mt-4 text-blue-950">
                     <!-- Judul -->
-                    <h1 class="text-xl font-semibold whitespace-nowrap">Data Program Bantuan</h1>
+                    <h1 class="text-xl font-semibold whitespace-nowrap">Data Keikutsertaan Program, Kepemilikan Aset dan Layanan</h1>
 
                     <!-- Filter dan Pencarian -->
                     <div class="flex items-center space-x-4">
@@ -53,7 +53,7 @@
                                         <option value="Daratan 1" {{ request('padukuhan') == 'Daratan 1' ? 'selected' : '' }}>Daratan 1</option>
                                         <option value="Daratan 2" {{ request('padukuhan') == 'Daratan 2' ? 'selected' : '' }}>Daratan 2</option>
                                         <option value="Daratan 3" {{ request('padukuhan') == 'Daratan 3' ? 'selected' : '' }}>Daratan 3</option>
-                                        <option value="Jonggaran" {{ request('padukuhan') == 'Jonggaran' ? 'selected' : '' }}>Jonggaran</option>
+                                        <option value="Jonggaran" {{ request('padukuhan') == 'Jonggrangan' ? 'selected' : '' }}>Jonggrangan</option>
                                         <option value="Soromintan" {{ request('padukuhan') == 'Soromintan' ? 'selected' : '' }}>Soromintan</option>
                                         <option value="Kerdan" {{ request('padukuhan') == 'Kerdan' ? 'selected' : '' }}>Kerdan</option>
                                         <option value="Kebitan" {{ request('padukuhan') == 'Kebitan' ? 'selected' : '' }}>Kebitan</option>
@@ -106,7 +106,7 @@
                         <!-- Form Tambah Data -->
                         <form>
                             @csrf
-                            <a href="" class="flex items-center px-4 py-2 space-x-2 text-xs font-semibold text-white transition duration-200 bg-blue-500 rounded-lg hover:bg-blue-600">
+                            <a href="{{ route('aset.create') }}" class="flex items-center px-4 py-2 space-x-2 text-xs font-semibold text-white transition duration-200 bg-blue-500 rounded-lg hover:bg-blue-600">
                                 <span>Tambah Data</span>
                                 <span class="items-center justify-center inline-block w-4 h-4 text-blue-500 bg-white rounded-full">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -117,10 +117,10 @@
                         </form>
 
                         <!-- Form Unduh Data -->
-                        <form id="downloadForm" action="" method="GET" target="_blank">
+                        <form id="downloadForm" action="{{ route('aset.export') }}" method="GET" target="_blank">
                             <button
                                 id="downloadButton"
-                                type="button"
+                                type="submit"
                                 class="flex items-center px-4 py-2 space-x-2 text-xs font-semibold text-white transition duration-200 bg-green-500 rounded-lg hover:bg-green-600"
                             >
                                 <span>Export XLSX</span>
@@ -141,6 +141,7 @@
                                 <tr>
                                     <th class="px-4 py-3 text-xs font-medium tracking-wider text-center text-black break-words">No</th>
                                     <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">Nomor Kartu Keluarga</th>
+                                    <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">Nama Kepala Keluarga</th>
                                     <th class="px-6 py-3 text-xs font-medium tracking-wider text-center text-black break-words">
                                        Aset Bergerak/Tidak Bergerak
                                     </th>
@@ -161,14 +162,16 @@
                                     <!-- Data Lain -->
                                     <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataAset->NomorKK }}</td>
                                     <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataAset->NamaKepalaKeluarga }}</td>
-                                    <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">
-                                        @foreach (['Sapi', 'Kerbau', 'Kuda', 'Babi', 'Kambing'] as $column)
-                                            @if(!is_null($dataAset->$column))
-                                                {{ $dataAset->$column }}
-                                                @if(!$loop->last) | @endif
-                                            @endif
-                                        @endforeach
+                                    <td class="px-6 py-4 text-xs font-medium text-left text-black whitespace-nowrap">
+                                        <ul class="pl-4 list-disc">
+                                            @foreach (['TabungGas', 'EmasPerhiasan', 'PerahuMotor', 'LemariEs', 'KomputerLaptopTablet', 'Smartphone', 'AC', 'SepedaMotor', 'LahanLain', 'PemanasAir', 'Sepeda', 'RumahLain', 'TeleponRumah', 'Mobil', 'TelevisiLayarDatar', 'Perahu'] as $column)
+                                                @if($dataAset->$column == 'Ya')
+                                                    <li>{{ $column }}</li>
+                                                @endif
+                                            @endforeach
+                                        </ul>
                                     </td>
+
                                     <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">
                                         {{ $dataAset->Sapi + $dataAset->Kerbau + $dataAset->Kuda + $dataAset->Babi + $dataAset->Kambing }}
                                     </td>
@@ -176,14 +179,14 @@
                                     <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">
                                         <div class="flex justify-center gap-2">
                                             <!-- Tombol Edit -->
-                                            <a href="" class="p-1 text-blue-500 hover:text-blue-700">
+                                            <a href="{{ route('aset.edit', $dataAset) }}" class="p-1 text-blue-500 hover:text-blue-700">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                                                 </svg>
                                             </a>
 
                                             <!-- Tombol Hapus -->
-                                            <form method="POST" action="" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                            <form method="POST" action="{{ route('aset.destroy', $dataAset) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="p-1 text-red-500 hover:text-red-700">

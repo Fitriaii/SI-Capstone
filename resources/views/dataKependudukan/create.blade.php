@@ -72,6 +72,8 @@
                                                 id="Provinsi"
                                                 name="Provinsi"
                                                 class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
+                                                value="DI Yogyakarta"
+                                                readonly
                                             >
                                             @error('Provinsi')
                                                 <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
@@ -109,7 +111,9 @@
                                                 id="Kabupaten"
                                                 name="Kabupaten"
                                                 class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
-                                            >
+                                                value="Sleman"
+                                                readonly
+                                                >
                                             @error('Kabupaten')
                                                 <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
                                             @enderror
@@ -146,6 +150,8 @@
                                                 id="Kecamatan"
                                                 name="Kecamatan"
                                                 class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
+                                                value="Minggir"
+                                                readonly
                                             >
                                             @error('Kecamatan')
                                                 <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
@@ -183,6 +189,8 @@
                                                 id="Kalurahan"
                                                 name="Kalurahan"
                                                 class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
+                                                value="Sendangarum"
+                                                readonly
                                             >
                                             @error('Kalurahan')
                                                 <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
@@ -224,7 +232,7 @@
                                                 <option value="Daratan 1">Daratan 1</option>
                                                 <option value="Daratan 2">Daratan 2</option>
                                                 <option value="Daratan 3">Daratan 3</option>
-                                                <option value="Jonggaran">Jonggaran</option>
+                                                <option value="Jonggrangan">Jonggrangan</option>
                                                 <option value="Soromintan">Soromintan</option>
                                                 <option value="Kerdan">Kerdan</option>
                                                 <option value="Kebitan">Kebitan</option>

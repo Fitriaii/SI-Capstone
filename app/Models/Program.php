@@ -8,8 +8,4 @@ class Program extends Model
 {
     protected $table = "program";
 
-    protected $fillable = [
-        "NamaProgram",
-    ];
-
 }

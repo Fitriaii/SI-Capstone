@@ -36,7 +36,7 @@
                         <!-- User Panel -->
                         <div class="flex items-center justify-center px-8 py-4 text-center border-b border-blue-300 user-panel">
                             <a href="{{ url('/dashboard') }}" class="font-semibold text-white hover:text-blue-200">
-                                Halooo!! Admin {{ session('nama') }}
+                                Halooo!! {{ Auth::user()->name }}
                             </a>
                         </div>
 

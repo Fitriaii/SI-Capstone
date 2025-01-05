@@ -69,12 +69,15 @@
 
                     <!-- Data Kependudukan Form -->
                     <div class="w-full p-6 mb-8 ">
-                        <form id="userForm" action="{{ route('aset.store') }}" method="POST" class="space-y-3">
+                        <form id="userForm" action="{{ route('aset.update', $dataAset) }}" method="POST" class="space-y-3">
                             @csrf
-
+                            @method('PATCH')
                             <div class="grid items-center justify-center grid-cols-1 gap-6">
                                 <!-- NomorKK & NamaKK -->
-                                <div x-data="dropdownSearch({{ $noKK }}, 'selectedNomorKK', 'NamaKepalaKeluarga')" class="grid grid-cols-2 gap-4">
+                                <div
+                                    x-data="dropdownSearch({{ $noKK }}, 'selectedNomorKK', 'NamaKepalaKeluarga', '{{ old('NomorKK', $previousNomorKK) }}', '{{ old('NamaKepalaKeluarga', $previousNamaKepalaKeluarga) }}')"
+                                    class="grid grid-cols-2 gap-4"
+                                >
                                     <!-- NomorKK Input -->
                                     <div class="mb-4">
                                         <label for="NomorKK" class="block mb-2 text-xs font-medium text-black">Nomor Kartu Keluarga</label>
@@ -146,7 +149,9 @@
                                                 id="TabungGas"
                                                 name="TabungGas"
                                                 value="Ya"
-                                                class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
+                                                class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
+                                                @if(old('TabungGas', $dataAset->TabungGas ?? '') == 'Ya') checked @endif
+                                            >
                                         </div>
 
                                         <!-- Emas/Perhiasan -->
@@ -158,7 +163,9 @@
                                                 id="EmasPerhiasan"
                                                 name="EmasPerhiasan"
                                                 value="Ya"
-                                                class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
+                                                class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
+                                                @if(old('EmasPerhiasan', $dataAset->EmasPerhiasan ?? '') == 'Ya') checked @endif
+                                            >
                                         </div>
 
                                         <!-- Kapal/Perahu Motor -->
@@ -170,7 +177,9 @@
                                                 id="PerahuMotor"
                                                 name="PerahuMotor"
                                                 value="Ya"
-                                                class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
+                                                class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
+                                                @if(old('PerahuMotor', $dataAset->PerahuMotor ?? '') == 'Ya') checked @endif
+                                            >
                                         </div>
                                     </div>
 
@@ -184,6 +193,7 @@
                                                 id="LemariEs"
                                                 name="LemariEs"
                                                 value="Ya"
+                                                @if(old('LemariEs', $dataAset->LemariEs ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
 
@@ -196,6 +206,7 @@
                                                 id="KomputerLaptopTablet"
                                                 name="KomputerLaptopTablet"
                                                 value="Ya"
+                                                @if(old('KomputerLaptopTablet', $dataAset->KomputerLaptopTablet ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
 
@@ -208,6 +219,7 @@
                                                 id="Smartphone"
                                                 name="Smartphone"
                                                 value="Ya"
+                                                @if(old('Smartphone', $dataAset->Smartphone ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
                                     </div>
@@ -222,6 +234,7 @@
                                                 id="AC"
                                                 name="AC"
                                                 value="Ya"
+                                                @if(old('AC', $dataAset->AC ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
 
@@ -234,6 +247,7 @@
                                                 id="SepedaMotor"
                                                 name="SepedaMotor"
                                                 value="Ya"
+                                                @if(old('SepedaMotor', $dataAset->SepedaMotor ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
 
@@ -246,6 +260,7 @@
                                                 id="LahanLain"
                                                 name="LahanLain"
                                                 value="Ya"
+                                                @if(old('LahanLain', $dataAset->LahanLain ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
                                     </div>
@@ -260,6 +275,7 @@
                                                 id="PemanasAir"
                                                 name="PemanasAir"
                                                 value="Ya"
+                                                @if(old('PemanasAir', $dataAset->PemanasAir ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
 
@@ -272,6 +288,7 @@
                                                 id="Sepeda"
                                                 name="Sepeda"
                                                 value="Ya"
+                                                @if(old('Sepeda', $dataAset->Sepeda ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
 
@@ -284,6 +301,7 @@
                                                 id="RumahLain"
                                                 name="RumahLain"
                                                 value="Ya"
+                                                @if(old('RumahLain', $dataAset->RumahLain ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
                                     </div>
@@ -298,6 +316,7 @@
                                                 id="TeleponRumah"
                                                 name="TeleponRumah"
                                                 value="Ya"
+                                                @if(old('TeleponRumah', $dataAset->TeleponRumah ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
 
@@ -310,6 +329,7 @@
                                                 id="Mobil"
                                                 name="Mobil"
                                                 value="Ya"
+                                                @if(old('Mobil', $dataAset->Mobil ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
                                     </div>
@@ -324,6 +344,7 @@
                                                 id="TelevisiLayarDatar"
                                                 name="TelevisiLayarDatar"
                                                 value="Ya"
+                                                @if(old('TelevisiLayarDatar', $dataAset->TelevisiLayarDatar ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
 
@@ -336,6 +357,7 @@
                                                 id="Perahu"
                                                 name="Perahu"
                                                 value="Ya"
+                                                @if(old('Perahu', $dataAset->Perahu ?? '') == 'Ya') checked @endif
                                                 class="px-2 py-2 bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600">
                                         </div>
                                     </div>
@@ -353,6 +375,7 @@
                                                 type="text"
                                                 id="Sapi"
                                                 name="Sapi"
+                                                value="{{ old('Sapi', isset($dataAset) ? $dataAset->Sapi : '') }}"
                                                 class="w-full px-4 py-2 text-sm bg-white border border-gray-300 rounded-md outline-none hover:border-gray-600 focus:ring focus:ring-blue-300 focus:border-blue-500"
                                             >
                                             @error('Sapi')
@@ -365,6 +388,7 @@
                                                 type="text"
                                                 id="Kuda"
                                                 name="Kuda"
+                                                value="{{ old('Kuda', isset($dataAset) ? $dataAset->Kuda : '') }}"
                                                 class="w-full px-4 py-2 text-sm bg-white border border-gray-300 rounded-md outline-none hover:border-gray-600 focus:ring focus:ring-blue-300 focus:border-blue-500"
                                             >
                                             @error('Kuda')
@@ -377,6 +401,7 @@
                                                 type="text"
                                                 id="Kambing"
                                                 name="Kambing"
+                                                value="{{ old('Kambing', isset($dataAset) ? $dataAset->Kambing : '') }}"
                                                 class="w-full px-4 py-2 text-sm bg-white border border-gray-300 rounded-md outline-none hover:border-gray-600 focus:ring focus:ring-blue-300 focus:border-blue-500"
                                             >
                                             @error('Kambing')
@@ -393,6 +418,7 @@
                                                 type="text"
                                                 id="Kerbau"
                                                 name="Kerbau"
+                                                value="{{ old('Kerbau', isset($dataAset) ? $dataAset->Kerbau : '') }}"
                                                 class="w-full px-4 py-2 text-sm bg-white border border-gray-300 rounded-md outline-none hover:border-gray-600 focus:ring focus:ring-blue-300 focus:border-blue-500"
                                             >
                                             @error('Kerbau')
@@ -405,6 +431,7 @@
                                                 type="text"
                                                 id="Babi"
                                                 name="Babi"
+                                                value="{{ old('Babi', isset($dataAset) ? $dataAset->Babi : '') }}"
                                                 class="w-full px-4 py-2 text-sm bg-white border border-gray-300 rounded-md outline-none hover:border-gray-600 focus:ring focus:ring-blue-300 focus:border-blue-500"
                                             >
                                             @error('Babi')
@@ -418,7 +445,7 @@
                             <div class="flex justify-center pt-4">
                                 <button type="submit"
                                     class="px-6 py-2 text-sm font-bold text-white transition duration-150 bg-blue-500 rounded-lg hover:bg-blue-600">
-                                    Simpan
+                                    Perbarui
                                 </button>
                             </div>
                         </form>
@@ -430,36 +457,51 @@
 
         <script>
             document.addEventListener('alpine:init', () => {
-                Alpine.data('dropdownSearch', (options, selectedModel, nameModel) => ({
-                    options: options, // Data NomorKK dan Nama dari backend
+                Alpine.data('dropdownSearch', (options, selectedModel, nameModel, defaultSelected = '', defaultDisplay = '') => ({
+                    options: options, // Data NomorKK dan NamaKepalaKeluarga dari backend
                     search: '', // Input pencarian
                     open: false, // Status dropdown terbuka
-                    [selectedModel]: '', // NomorKK yang dipilih
-                    [nameModel]: '', // Nama Kepala Keluarga sesuai NomorKK yang dipilih
+                    [selectedModel]: defaultSelected || '', // NomorKK yang dipilih (default jika ada)
+                    [nameModel]: defaultDisplay || '', // Nama Kepala Keluarga yang dipilih (default jika ada)
 
                     init() {
                         // Inisialisasi filteredOptions dengan semua data
-                        this.filteredOptions = this.options;
+                        if (defaultSelected && defaultDisplay) {
+                            this[selectedModel] = defaultSelected; // Set default NomorKK
+                            this[nameModel] = defaultDisplay; // Set default NamaKepalaKeluarga
+                            this.search = defaultSelected; // Tampilkan default NomorKK di input pencarian
+                        }
+                        this.filteredOptions = this.options; // Semua data awalnya terlihat
                     },
 
                     get filteredOptions() {
-                        // Filter data berdasarkan pencarian
-                        if (this.search.trim() === '') {
-                            return this.options; // Tampilkan semua data jika pencarian kosong
+                        // Filter data berdasarkan input pencarian
+                        if (!this.search.trim()) {
+                            return this.options; // Jika input kosong, tampilkan semua data
                         }
                         return this.options.filter(option => {
-                            const nomorKK = option.NomorKK ? String(option.NomorKK).toLowerCase() : ''; // Pastikan tipe string
+                            const nomorKK = option.NomorKK ? String(option.NomorKK).toLowerCase() : '';
                             return nomorKK.includes(this.search.toLowerCase());
                         });
                     },
 
                     selectOption(option) {
-                        // Pilih opsi, isi data ke model, lalu tutup dropdown
+                        // Set data ketika opsi dipilih
                         this[selectedModel] = option.NomorKK;
                         this[nameModel] = option.NamaKepalaKeluarga;
                         this.search = option.NomorKK; // Tampilkan NomorKK yang dipilih di input pencarian
                         this.open = false; // Tutup dropdown
-                    }
+                    },
+
+                    closeDropdown() {
+                        // Tutup dropdown saat klik di luar
+                        this.open = false;
+                    },
+
+                    toggleDropdown() {
+                        // Toggle status dropdown
+                        this.open = !this.open;
+                    },
                 }));
             });
         </script>
