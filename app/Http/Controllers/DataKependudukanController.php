@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\DataKeluarga;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DataKependudukanController extends Controller
 {
@@ -35,7 +37,7 @@ class DataKependudukanController extends Controller
                 $query->where('Padukuhan', $padukuhan);
             }
 
-            // Ambil data dengan paginasi
+            $query->orderBy('created_at', 'desc');
             $keluarga = $query->paginate(10);
 
             // Mengirimkan data ke view dengan menggunakan compact
@@ -63,33 +65,74 @@ class DataKependudukanController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'Provinsi' => 'required|string|max:255',
-            'Kabupaten' => 'required|string|max:255',
-            'Kecamatan' => 'required|string|max:255',
-            'Kalurahan' => 'required|string|max:255',
-            'Padukuhan' => 'required|string|max:255',
-            'KodeSLS' => 'required|numeric',
-            'KodeSubSLS' => 'required|numeric',
-            'NamaSLSNonSLS' => 'required|string|max:255',
-            'Alamat' => 'required|string|max:255',
-            'NamaKepalaKeluarga' => 'required|string|max:255',
-            'NomorUrutBangunanTempatTinggal' => 'required|integer',
-            'NoUrutKeluargaHasilVerif' => 'required|integer',
-            'StatusKeluarga' => 'required|integer',
-            'JumlahAnggotaKeluarga' => 'required|numeric',
-            'IdLandmarkWilkerStat' => 'required|max:255',
-            'NomorKK' => 'required|numeric|digits:16',
-            'KodeKartuKK' => 'required|string',
-        ]);
+        try {
+            // Validasi data input
+            $validatedData = $request->validate([
+                'Provinsi' => 'required|string|max:255',
+                'Kabupaten' => 'required|string|max:255',
+                'Kecamatan' => 'required|string|max:255',
+                'Kalurahan' => 'required|string|max:255',
+                'Padukuhan' => 'required|string|max:255',
+                'KodeSLS' => 'required|numeric',
+                'KodeSubSLS' => 'required|numeric',
+                'NamaSLSNonSLS' => 'required|string|max:255',
+                'Alamat' => 'required|string|max:255',
+                'NamaKepalaKeluarga' => 'required|string|max:255',
+                'NomorUrutBangunanTempatTinggal' => 'required|integer',
+                'NoUrutKeluargaHasilVerif' => 'required|integer',
+                'StatusKeluarga' => 'required|integer',
+                'JumlahAnggotaKeluarga' => 'required|numeric',
+                'IdLandmarkWilkerStat' => 'required|string|max:255',
+                'NomorKK' => 'required|numeric|digits:16',
+                'KodeKartuKK' => 'required|string|max:255',
+            ]);
 
-        // Simpan data ke database
-        DataKeluarga::create($validatedData);
+            // Cek jika NomorKK sudah ada di database
+            $isNomorKKExist = DataKeluarga::where('NomorKK', $validatedData['NomorKK'])->exists();
 
-        // Redirect dengan pesan sukses
-        return redirect()->route('penduduk.index') // Ganti dengan route tujuan setelah penyimpanan
-            ->with('success', 'Data keluarga berhasil ditambahkan.');
+            if ($isNomorKKExist) {
+                Alert::error('Gagal', 'Nomor KK sudah terdaftar.');
+                return back()->withInput();
+            }
+
+            // Simpan data keluarga ke database
+            $dataKeluarga = DataKeluarga::create($validatedData);
+
+            // Log data yang berhasil disimpan (untuk debugging)
+            Log::info('Data keluarga berhasil disimpan:', $dataKeluarga->toArray());
+
+            // Tampilkan notifikasi sukses
+            Alert::success('Sukses', 'Data keluarga berhasil ditambahkan.');
+
+            return redirect()->route('penduduk.index'); // Sesuaikan dengan route tujuan
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Tangkap error validasi dan log pesan error
+            Log::warning('Validasi gagal: ' . json_encode($e->errors()));
+
+            // Buat pesan error untuk pengguna
+            $errorMessage = 'Terjadi kesalahan pada data yang diinput:';
+            foreach ($e->errors() as $field => $messages) {
+                $errorMessage .= "\n- " . ucfirst($field) . ": " . implode(', ', $messages);
+            }
+
+            // Tampilkan pesan error menggunakan SweetAlert
+            Alert::error('Error', $errorMessage);
+
+            return back()->withInput()->withErrors($e->errors());
+        } catch (\Throwable $th) {
+            // Tangkap error tak terduga dan log detailnya
+            Log::error('Error saat menyimpan data keluarga: ' . $th->getMessage(), [
+                'trace' => $th->getTraceAsString()
+            ]);
+
+            // Tampilkan notifikasi error kepada pengguna
+            Alert::error('Error', 'Terjadi kesalahan tak terduga. Silakan coba lagi.');
+
+            return back();
+        }
     }
+
+
 
     /**
      * Display the specified resource.
@@ -111,46 +154,91 @@ class DataKependudukanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DataKeluarga $dataKeluarga)
+     public function update(Request $request, DataKeluarga $dataKeluarga)
     {
-        // Validasi data input
-        $validatedData = $request->validate([
-            'Provinsi' => 'required|string|max:255',
-            'Kabupaten' => 'required|string|max:255',
-            'Kecamatan' => 'required|string|max:255',
-            'Kalurahan' => 'required|string|max:255',
-            'Padukuhan' => 'required|string|max:255',
-            'KodeSLS' => 'required|numeric',
-            'KodeSubSLS' => 'required|numeric',
-            'NamaSLSNonSLS' => 'required|string|max:255',
-            'Alamat' => 'required|string|max:255',
-            'NamaKepalaKeluarga' => 'required|string|max:255',
-            'NomorUrutBangunanTempatTinggal' => 'required|integer',
-            'NoUrutKeluargaHasilVerif' => 'required|integer',
-            'StatusKeluarga' => 'required|integer',
-            'JumlahAnggotaKeluarga' => 'required|numeric',
-            'IdLandmarkWilkerStat' => 'required|max:255',
-            'NomorKK' => 'required|numeric|digits:16',
-            'KodeKartuKK' => 'required|string',
-        ]);
+        try {
+            // Validasi data input
+            $validatedData = $request->validate([
+                'Provinsi' => 'required|string|max:255',
+                'Kabupaten' => 'required|string|max:255',
+                'Kecamatan' => 'required|string|max:255',
+                'Kalurahan' => 'required|string|max:255',
+                'Padukuhan' => 'required|string|max:255',
+                'KodeSLS' => 'required|numeric',
+                'KodeSubSLS' => 'required|numeric',
+                'NamaSLSNonSLS' => 'required|string|max:255',
+                'Alamat' => 'required|string|max:255',
+                'NamaKepalaKeluarga' => 'required|string|max:255',
+                'NomorUrutBangunanTempatTinggal' => 'required|integer',
+                'NoUrutKeluargaHasilVerif' => 'required|integer',
+                'StatusKeluarga' => 'required|integer',
+                'JumlahAnggotaKeluarga' => 'required|numeric',
+                'IdLandmarkWilkerStat' => 'required|max:255',
+                'NomorKK' => 'required|numeric|digits:16',
+                'KodeKartuKK' => 'required|string',
+            ]);
 
-        $dataKeluarga->update($validatedData);
+            // Perbarui data di database
+            $dataKeluarga->update($validatedData);
 
-        // Redirect dengan pesan sukses
-        return redirect()->route('penduduk.index', compact('dataKeluarga')) // Ganti dengan route tujuan setelah pembaruan
-            ->with('success', 'Data keluarga berhasil diperbarui.');
+            // Notifikasi sukses
+            Alert::success('Sukses', 'Data keluarga berhasil diperbarui.');
+
+            // Redirect dengan pesan sukses
+            return redirect()->route('penduduk.index') // Sesuaikan dengan route tujuan
+                ->with('success', 'Data keluarga berhasil diperbarui.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Tangkap error validasi dan tampilkan pesan error
+            $errors = $e->errors(); // Ambil semua pesan error
+
+            // Buat pesan error untuk ditampilkan
+            $errorMessage = 'Terjadi kesalahan pada data yang diinput:';
+
+            foreach ($errors as $field => $messages) {
+                // Tambahkan pesan kesalahan untuk setiap kolom yang gagal
+                $errorMessage .= "\n- " . ucfirst($field) . ": " . implode(', ', $messages);
+            }
+
+            // Tampilkan pesan error menggunakan SweetAlert
+            Alert::error('Error', $errorMessage);
+
+            return back()->withInput()->withErrors($errors);  // Kembali ke halaman dengan input dan error
+        } catch (\Throwable $th) {
+            // Tangkap error lainnya dan log
+            Log::error('Error saat menyimpan data keluarga: ' . $th->getMessage());
+
+            // Tampilkan notifikasi error jika terjadi kesalahan lainnya
+            Alert::error('Error', 'Terjadi kesalahan. Silakan coba lagi.');
+
+            return back(); // Kembali ke halaman sebelumnya
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(DataKeluarga $dataKeluarga)
     {
-        $dataKeluarga->delete();
+        try {
+            // Hapus data dari database
+            $dataKeluarga->delete();
 
-        // Redirect dengan pesan sukses
-        return redirect()->route('penduduk.index', compact('dataKeluarga')) // Ganti dengan route tujuan setelah penghapusan
-            ->with('success', 'Data keluarga berhasil dihapus.');
+            // Notifikasi sukses
+            Alert::success('Sukses', 'Data keluarga berhasil dihapus.');
+
+            // Redirect ke halaman indeks
+            return redirect()->route('penduduk.index') // Sesuaikan dengan route tujuan
+                ->with('success', 'Data keluarga berhasil dihapus.');
+        } catch (\Throwable $th) {
+            // Tangkap error dan log
+            Log::error('Error saat menghapus data keluarga: ' . $th->getMessage());
+
+            // Notifikasi error
+            Alert::error('Error', 'Terjadi kesalahan. Data keluarga tidak dapat dihapus.');
+
+            return back();
+        }
     }
 
 

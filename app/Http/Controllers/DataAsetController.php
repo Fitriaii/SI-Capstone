@@ -6,6 +6,8 @@ use App\Models\DataAset;
 use App\Models\dataKeluarga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DataAsetController extends Controller
 {
@@ -51,7 +53,8 @@ class DataAsetController extends Controller
                     $q->where('Padukuhan', $padukuhan);
                 });
             }
-            // Ambil data dengan paginasi
+
+            $query->orderBy('created_at', 'desc');
             $aset = $query->paginate(10);
 
             // Mengirimkan data ke view dengan menggunakan compact
@@ -70,8 +73,16 @@ class DataAsetController extends Controller
     public function create()
     {
         $noKK = dataKeluarga::select('NomorKK', 'NamaKepalaKeluarga')->get();
-        return view('dataAset.create',[
-            'noKK' => $noKK->toJson()
+
+        $previousNomorKK = session('previousNomorKK', null); // Bisa menggunakan session atau default null jika tidak ada
+        $previousNamaKepalaKeluarga = $previousNomorKK
+            ? DataKeluarga::where('NomorKK', $previousNomorKK)->value('NamaKepalaKeluarga')
+            : null;
+        // Kirim data ke view dalam bentuk JSON, termasuk previousNomorKK
+        return view('dataAset.create', [
+            'noKK' => $noKK->toJson(), // Kirim data Nomor KK ke view dalam format JSON
+            'previousNomorKK' => $previousNomorKK, // Mengirimkan Nomor KK sebelumnya jika ada
+            'previousNamaKepalaKeluarga' => $previousNamaKepalaKeluarga
         ]);
     }
 
@@ -80,39 +91,68 @@ class DataAsetController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi data yang dikirim
-        $validatedData = $request->validate([
-            'NomorKK' => 'required|numeric|digits:16',
-            'NamaKepalaKeluarga' => 'required|string|max:100',
-            'TabungGas' => 'nullable|string|in:Ya,Tidak',
-            'LemariEs' => 'nullable|string|in:Ya,Tidak',
-            'AC' => 'nullable|string|in:Ya,Tidak',
-            'PemanasAir' => 'nullable|string|in:Ya,Tidak',
-            'TeleponRumah' => 'nullable|string|in:Ya,Tidak',
-            'TelevisiLayarDatar' => 'nullable|string|in:Ya,Tidak',
-            'EmasPerhiasan' => 'nullable|string|in:Ya,Tidak',
-            'KomputerLaptopTablet' => 'nullable|string|in:Ya,Tidak',
-            'SepedaMotor' => 'nullable|string|in:Ya,Tidak',
-            'Sepeda' => 'nullable|string|in:Ya,Tidak',
-            'Mobil' => 'nullable|string|in:Ya,Tidak',
-            'Perahu' => 'nullable|string|in:Ya,Tidak',
-            'PerahuMotor' => 'nullable|string|in:Ya,Tidak',
-            'Smartphone' => 'nullable|string|in:Ya,Tidak',
-            'LahanLain' => 'nullable|string|in:Ya,Tidak',
-            'RumahLain' => 'nullable|string|in:Ya,Tidak',
-            'Sapi' => 'nullable|integer|min:0',
-            'Kerbau' => 'nullable|integer|min:0',
-            'Kuda' => 'nullable|integer|min:0',
-            'Babi' => 'nullable|integer|min:0',
-            'Kambing' => 'nullable|integer|min:0',
-        ]);
+        try {
+            // Validasi data yang dikirim
+            $validatedData = $request->validate([
+                'NomorKK' => 'required|numeric|digits:16',
+                'NamaKepalaKeluarga' => 'required|string|max:100',
+                'TabungGas' => 'nullable|string|in:Ya,Tidak',
+                'LemariEs' => 'nullable|string|in:Ya,Tidak',
+                'AC' => 'nullable|string|in:Ya,Tidak',
+                'PemanasAir' => 'nullable|string|in:Ya,Tidak',
+                'TeleponRumah' => 'nullable|string|in:Ya,Tidak',
+                'TelevisiLayarDatar' => 'nullable|string|in:Ya,Tidak',
+                'EmasPerhiasan' => 'nullable|string|in:Ya,Tidak',
+                'KomputerLaptopTablet' => 'nullable|string|in:Ya,Tidak',
+                'SepedaMotor' => 'nullable|string|in:Ya,Tidak',
+                'Sepeda' => 'nullable|string|in:Ya,Tidak',
+                'Mobil' => 'nullable|string|in:Ya,Tidak',
+                'Perahu' => 'nullable|string|in:Ya,Tidak',
+                'PerahuMotor' => 'nullable|string|in:Ya,Tidak',
+                'Smartphone' => 'nullable|string|in:Ya,Tidak',
+                'LahanLain' => 'nullable|string|in:Ya,Tidak',
+                'RumahLain' => 'nullable|string|in:Ya,Tidak',
+                'Sapi' => 'nullable|integer|min:0',
+                'Kerbau' => 'nullable|integer|min:0',
+                'Kuda' => 'nullable|integer|min:0',
+                'Babi' => 'nullable|integer|min:0',
+                'Kambing' => 'nullable|integer|min:0',
+            ]);
 
-        // Simpan data ke database
-        DataAset::create($validatedData);
+            // Simpan data ke database
+            $dataAset = DataAset::create($validatedData);
 
-        // Redirect atau respon setelah menyimpan
-        return redirect()->route('aset.index')->with('success', 'Data aset berhasil disimpan.');
+            // Log data yang berhasil disimpan
+            Log::info('Data aset berhasil disimpan:', $dataAset->toArray());
+
+            // Redirect dengan notifikasi sukses
+            Alert::success('Sukses', 'Data aset berhasil disimpan.');
+            return redirect()->route('aset.index');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Tangkap error validasi dan log pesan error
+            Log::warning('Validasi gagal: ' . json_encode($e->errors()));
+
+            // Buat pesan error untuk ditampilkan
+            $errorMessage = 'Terjadi kesalahan pada data yang diinput:';
+            foreach ($e->errors() as $field => $messages) {
+                $errorMessage .= "\n- " . ucfirst($field) . ": " . implode(', ', $messages);
+            }
+
+            // Tampilkan pesan error menggunakan SweetAlert
+            Alert::error('Error', $errorMessage);
+            return back()->withInput()->withErrors($e->errors());
+        } catch (\Throwable $th) {
+            // Tangkap error tak terduga dan log detailnya
+            Log::error('Error saat menyimpan data aset: ' . $th->getMessage(), [
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Tampilkan notifikasi error kepada pengguna
+            Alert::error('Error', 'Terjadi kesalahan tak terduga. Silakan coba lagi.');
+            return back();
+        }
     }
+
 
 
     /**
@@ -151,38 +191,61 @@ class DataAsetController extends Controller
      */
     public function update(Request $request, DataAset $dataAset)
     {
-        $validatedData = $request->validate([
-            'NomorKK' => 'required|numeric|digits:16',
-            'NamaKepalaKeluarga' => 'required|string|max:100',
-            'TabungGas' => 'nullable|string|in:Ya,Tidak',
-            'LemariEs' => 'nullable|string|in:Ya,Tidak',
-            'AC' => 'nullable|string|in:Ya,Tidak',
-            'PemanasAir' => 'nullable|string|in:Ya,Tidak',
-            'TeleponRumah' => 'nullable|string|in:Ya,Tidak',
-            'TelevisiLayarDatar' => 'nullable|string|in:Ya,Tidak',
-            'EmasPerhiasan' => 'nullable|string|in:Ya,Tidak',
-            'KomputerLaptopTablet' => 'nullable|string|in:Ya,Tidak',
-            'SepedaMotor' => 'nullable|string|in:Ya,Tidak',
-            'Sepeda' => 'nullable|string|in:Ya,Tidak',
-            'Mobil' => 'nullable|string|in:Ya,Tidak',
-            'Perahu' => 'nullable|string|in:Ya,Tidak',
-            'PerahuMotor' => 'nullable|string|in:Ya,Tidak',
-            'Smartphone' => 'nullable|string|in:Ya,Tidak',
-            'LahanLain' => 'nullable|string|in:Ya,Tidak',
-            'RumahLain' => 'nullable|string|in:Ya,Tidak',
-            'Sapi' => 'nullable|integer|min:0',
-            'Kerbau' => 'nullable|integer|min:0',
-            'Kuda' => 'nullable|integer|min:0',
-            'Babi' => 'nullable|integer|min:0',
-            'Kambing' => 'nullable|integer|min:0',
-        ]);
+        try {
+            // Validasi data yang dikirim
+            $validatedData = $request->validate([
+                'NomorKK' => 'required|numeric|digits:16',
+                'NamaKepalaKeluarga' => 'required|string|max:100',
+                'TabungGas' => 'nullable|string|in:Ya,Tidak',
+                'LemariEs' => 'nullable|string|in:Ya,Tidak',
+                'AC' => 'nullable|string|in:Ya,Tidak',
+                'PemanasAir' => 'nullable|string|in:Ya,Tidak',
+                'TeleponRumah' => 'nullable|string|in:Ya,Tidak',
+                'TelevisiLayarDatar' => 'nullable|string|in:Ya,Tidak',
+                'EmasPerhiasan' => 'nullable|string|in:Ya,Tidak',
+                'KomputerLaptopTablet' => 'nullable|string|in:Ya,Tidak',
+                'SepedaMotor' => 'nullable|string|in:Ya,Tidak',
+                'Sepeda' => 'nullable|string|in:Ya,Tidak',
+                'Mobil' => 'nullable|string|in:Ya,Tidak',
+                'Perahu' => 'nullable|string|in:Ya,Tidak',
+                'PerahuMotor' => 'nullable|string|in:Ya,Tidak',
+                'Smartphone' => 'nullable|string|in:Ya,Tidak',
+                'LahanLain' => 'nullable|string|in:Ya,Tidak',
+                'RumahLain' => 'nullable|string|in:Ya,Tidak',
+                'Sapi' => 'nullable|integer|min:0',
+                'Kerbau' => 'nullable|integer|min:0',
+                'Kuda' => 'nullable|integer|min:0',
+                'Babi' => 'nullable|integer|min:0',
+                'Kambing' => 'nullable|integer|min:0',
+            ]);
 
-        // Update data aset
-        $dataAset->update($validatedData);
+            // Update data aset
+            $dataAset->update($validatedData);
 
-        // Redirect atau respon setelah mengupdate
-        return redirect()->route('aset.index', compact('dataAset')
-        )->with('success', 'Data aset berhasil diubah.');
+            // Redirect dengan notifikasi sukses
+            Alert::success('Sukses', 'Data aset berhasil diperbarui.');
+            return redirect()->route('aset.index');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Tangkap error validasi
+            $errors = $e->errors();
+            $errorMessage = 'Terjadi kesalahan pada data yang diinput:';
+
+            foreach ($errors as $field => $messages) {
+                $errorMessage .= "\n- " . ucfirst($field) . ": " . implode(', ', $messages);
+            }
+
+            // Tampilkan pesan error menggunakan SweetAlert
+            Alert::error('Error', $errorMessage);
+            return back()->withInput()->withErrors($errors);
+        } catch (\Throwable $th) {
+            // Tangkap error lain dan log detailnya
+            Log::error('Error saat mengupdate data aset: ' . $th->getMessage());
+
+            // Tampilkan notifikasi error
+            Alert::error('Error', 'Terjadi kesalahan. Silakan coba lagi.');
+            return back();
+        }
+
     }
 
     /**
@@ -190,10 +253,22 @@ class DataAsetController extends Controller
      */
     public function destroy(DataAset $dataAset)
     {
-        $dataAset->delete();
+        try {
+            // Hapus data aset
+            $dataAset->delete();
 
-        // Redirect atau respon setelah menghapus
-        return redirect()->route('aset.index')->with('success', 'Data aset berhasil dihapus.');
+            // Redirect dengan notifikasi sukses
+            Alert::success('Sukses', 'Data aset berhasil dihapus.');
+            return redirect()->route('aset.index');
+        } catch (\Throwable $th) {
+            // Tangkap error dan log detailnya
+            Log::error('Error saat menghapus data aset: ' . $th->getMessage());
+
+            // Tampilkan notifikasi error
+            Alert::error('Error', 'Terjadi kesalahan saat menghapus data. Silakan coba lagi.');
+            return back();
+        }
     }
-    
+
+
 }

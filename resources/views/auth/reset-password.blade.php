@@ -15,10 +15,11 @@
 
         <!-- Form Reset Password -->
         <div class="w-full p-8 md:w-1/2">
-            <div class="mb-8 text-center">
-                <h2 class="text-lg font-semibold text-gray-700">Reset Kata Sandi</h2>
-                <p class="text-sm text-gray-600">Masukkan email Anda dan kata sandi baru untuk mengatur ulang akses ke akun Anda.</p>
-            </div>
+
+            <p class="mt-4 mb-10 text-xl font-bold text-left text-textlp">
+                Reset Kata Sandi<br>
+                <span class="text-sm font-light">Masukkan email Anda dan kata sandi baru untuk mengatur ulang akses ke akun Anda.</span>
+            </p>
 
             @if (session('status'))
                 <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 border border-green-300 rounded-lg" role="alert">

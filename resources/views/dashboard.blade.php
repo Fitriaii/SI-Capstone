@@ -12,10 +12,11 @@
 </head>
 <body class="bg-blue-100">
 
+
     <nav class="fixed z-10 w-[calc(100%-16rem)] bg-blue-300 border-b border-blue-300 shadow-sm ml-64">
         <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="flex items-center justify-center h-16">
-                <h1 class="font-semibold text-center text-blue-950">
+                <h1 class="font-bold text-center text-white">
                     DATA REGISTRASI SOSIAL EKONOMI KELURAHAN SENDANGARUM
                 </h1>
             </div>
@@ -42,7 +43,7 @@
                     <!-- Card: Jumlah Kartu Keluarga -->
                     <div class="flex items-center p-4 bg-white rounded-lg shadow">
                         <div class="p-4 rounded">
-                            <img src="Images/home.png" alt="Home Icon">
+                            <img src="Images/jumlahkk.png" alt="Home Icon" class="w-12 h-12">
                         </div>
                         <div class="ml-4">
                             <h2 class="text-lg font-semibold text-gray-700">Jumlah Kartu Keluarga</h2>
@@ -53,7 +54,7 @@
                     <!-- Card: Jumlah Masyarakat -->
                     <div class="flex items-center p-4 bg-white rounded-lg shadow">
                         <div class="p-4 rounded">
-                            <img src="Images/family.png" alt="Family Icon">
+                            <img src="Images/masyarakat.png" alt="Family Icon" class="w-12 h-12">
                         </div>
                         <div class="ml-4">
                             <h2 class="text-lg font-semibold text-gray-700">Jumlah Masyarakat</h2>
@@ -64,7 +65,7 @@
                     <!-- Card: Jumlah Penerima Bantuan -->
                     <div class="flex items-center p-4 bg-white rounded-lg shadow">
                         <div class="p-4 rounded">
-                            <img src="Images/insurance.png" alt="Insurance Icon">
+                            <img src="Images/money.png" alt="Insurance Icon" class="w-12 h-12">
                         </div>
                         <div class="ml-4">
                             <h2 class="text-lg font-semibold text-gray-700">Jumlah Penerima Bantuan</h2>
@@ -101,11 +102,11 @@
                         </div>
                     </div>
                 </div>
-
+                @include('components.footer')
             </div>
-
         </div>
     </div>
+
 
 
     <!-- Script untuk grafik -->
@@ -350,7 +351,6 @@
         createStatusRumahChart();
         createJumlahBantuanChart();
     </script>
-
 
 
 </body>

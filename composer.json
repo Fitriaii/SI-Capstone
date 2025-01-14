@@ -11,7 +11,8 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "maatwebsite/excel": "^3.1",
-        "phpoffice/phpspreadsheet": "1.29.5"
+        "phpoffice/phpspreadsheet": "1.29.5",
+        "realrashid/sweet-alert": "^7.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

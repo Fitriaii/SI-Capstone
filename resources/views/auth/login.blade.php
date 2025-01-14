@@ -26,24 +26,30 @@
                 <!-- Input Email -->
                 <div class="mb-4">
                     <label for="email" class="block mb-1 text-base text-gray-950">Email</label>
-                    <input type="text" id="email" name="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" placeholder="Email" required>
+                    <input type="text" id="email" name="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 @error('email') border-red-500 @enderror" placeholder="Email" value="{{ old('email') }}" required>
+
+                    <!-- Pesan error untuk email -->
                     @error('email')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+
                 <!-- Input Password -->
                 <div class="mb-6">
                     <label for="password" class="block mb-1 text-base text-gray-950">Kata Sandi</label>
-                    <input type="password" id="password" name="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" placeholder="Kata Sandi" required>
+                    <input type="password" id="password" name="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 @error('password') border-red-500 @enderror" placeholder="Kata Sandi" value="{{ old('password') }}" required>
+
+                    <!-- Pesan error untuk password -->
                     @error('password')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
+
                     <p class="mt-2 text-sm text-left text-gray-600">
-                        <a href="{{ route('password.request') }}" class=" hover:underline">Lupa Kata Sandi?</a>
+                        <a href="{{ route('password.request') }}" class="hover:underline">Lupa Kata Sandi?</a>
                     </p>
                 </div>
                 <!-- Tombol Login -->
-                <button type="submit" class="w-full py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring focus:bg-blue-800">Log in</button>
+                <button type="submit" class="w-full py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring focus:bg-blue-800">Masuk</button>
             </form>
         </div>
     </div>
