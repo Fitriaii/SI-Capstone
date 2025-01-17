@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -22,11 +23,29 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         try {
+            // Validasi data masukan
+            $validatedData = $request->validate([
+                'email' => ['required', 'email'],
+                'password' => ['required', 'string'],
+            ]);
+
+            // Cek apakah email terdaftar
+            $user = \App\Models\User::where('email', $validatedData['email'])->first();
+            if (!$user) {
+                return back()->withErrors([
+                    'email' => 'Email yang Anda masukkan salah atau tidak terdaftar.',
+                ])->withInput();
+            }
+
             // Proses autentikasi pengguna
-            $request->authenticate();
+            if (!Auth::attempt($validatedData, $request->boolean('remember'))) {
+                return back()->withErrors([
+                    'password' => 'Kata sandi yang Anda masukkan salah.',
+                ])->withInput();
+            }
 
             // Regenerasi session untuk menghindari session fixation
             $request->session()->regenerate();
@@ -34,28 +53,28 @@ class AuthenticatedSessionController extends Controller
             // Redirect ke halaman yang dimaksud setelah login
             return redirect()->intended(route('dashboard', absolute: false));
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Menangkap pengecualian jika autentikasi gagal (misalnya username/password salah)
+            // Menangkap pengecualian validasi input
             $errors = $e->errors();
 
-            // Jika ada error untuk password, beri pesan pada password
-            $errorMessagePassword = isset($errors['password']) ? 'Kata sandi yang Anda masukkan salah.' : null;
-
-            // Jika ada error untuk email, beri pesan pada email
-            $errorMessageEmail = isset($errors['email']) ? 'Email yang Anda masukkan tidak valid.' : null;
-
-            // Mengembalikan pesan error untuk masing-masing field
             return back()->withErrors([
-                'email' => $errorMessageEmail,
-                'password' => $errorMessagePassword
+                'email' => $errors['email'][0] ?? null,
+                'password' => $errors['password'][0] ?? null,
             ])->withInput();
         } catch (\Exception $e) {
-            // Menangkap pengecualian umum jika terjadi kesalahan lainnya
+            // Log kesalahan untuk debugging
+            Log::error('Kesalahan saat proses login: ' . $e->getMessage(), [
+                'exception' => $e,
+            ]);
+
+            // Pesan error generik jika terjadi kesalahan lainnya
             return back()->withErrors([
-                'email' => 'Terjadi kesalahan sistem. Silakan coba lagi.',
-                'password' => 'Terjadi kesalahan sistem. Silakan coba lagi.'
+                'email' => 'Terjadi kesalahan sistem saat memproses email Anda.',
+                'password' => 'Terjadi kesalahan sistem saat memproses kata sandi Anda.',
             ])->withInput();
         }
     }
+
+
 
 
 

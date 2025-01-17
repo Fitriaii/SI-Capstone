@@ -197,7 +197,7 @@ class DataProgramController extends Controller
         try {
             // Validasi data yang dikirim
             $validatedData = $request->validate([
-                'NomorKK' => 'required|digits:16',
+                'NomorKK' => 'required|numeric|digits:16',
                 'NamaKepalaKeluarga' => 'required|string|max:100',
                 'ProgramBantuanSembako' => 'required|in:Ya,Tidak',
                 'PeriodeSembako' => 'nullable',
@@ -219,7 +219,7 @@ class DataProgramController extends Controller
             $dataProgram->update($validatedData);
 
             // Redirect dengan notifikasi sukses
-            Alert::success('Sukses', 'Data program berhasil diubah.');
+            Alert::success('Sukses', 'Data program berhasil diperbarui.');
             return redirect()->route('program.index');
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Tangkap error validasi dan tampilkan pesan error

@@ -78,11 +78,11 @@ class DataKependudukanController extends Controller
                 'NamaSLSNonSLS' => 'required|string|max:255',
                 'Alamat' => 'required|string|max:255',
                 'NamaKepalaKeluarga' => 'required|string|max:255',
-                'NomorUrutBangunanTempatTinggal' => 'required|integer',
-                'NoUrutKeluargaHasilVerif' => 'required|integer',
-                'StatusKeluarga' => 'required|integer',
-                'JumlahAnggotaKeluarga' => 'required|numeric',
-                'IdLandmarkWilkerStat' => 'required|string|max:255',
+                'NomorUrutBangunanTempatTinggal' => 'required',
+                'NoUrutKeluargaHasilVerif' => 'required',
+                'StatusKeluarga' => 'required',
+                'JumlahAnggotaKeluarga' => 'required',
+                'IdLandmarkWilkerStat' => 'required|alpha_num|size:6',
                 'NomorKK' => 'required|numeric|digits:16',
                 'KodeKartuKK' => 'required|string|max:255',
             ]);
@@ -169,11 +169,11 @@ class DataKependudukanController extends Controller
                 'NamaSLSNonSLS' => 'required|string|max:255',
                 'Alamat' => 'required|string|max:255',
                 'NamaKepalaKeluarga' => 'required|string|max:255',
-                'NomorUrutBangunanTempatTinggal' => 'required|integer',
-                'NoUrutKeluargaHasilVerif' => 'required|integer',
-                'StatusKeluarga' => 'required|integer',
+                'NomorUrutBangunanTempatTinggal' => 'required',
+                'NoUrutKeluargaHasilVerif' => 'required',
+                'StatusKeluarga' => 'required',
                 'JumlahAnggotaKeluarga' => 'required|numeric',
-                'IdLandmarkWilkerStat' => 'required|max:255',
+                'IdLandmarkWilkerStat' => 'required|alpha_num|size:6',
                 'NomorKK' => 'required|numeric|digits:16',
                 'KodeKartuKK' => 'required|string',
             ]);
@@ -181,27 +181,20 @@ class DataKependudukanController extends Controller
             // Perbarui data di database
             $dataKeluarga->update($validatedData);
 
-            // Notifikasi sukses
             Alert::success('Sukses', 'Data keluarga berhasil diperbarui.');
-
-            // Redirect dengan pesan sukses
-            return redirect()->route('penduduk.index') // Sesuaikan dengan route tujuan
-                ->with('success', 'Data keluarga berhasil diperbarui.');
+            return redirect()->route('penduduk.index');
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Tangkap error validasi dan tampilkan pesan error
-            $errors = $e->errors(); // Ambil semua pesan error
+            $errors = $e->errors(); // Mengambil semua pesan error
 
             // Buat pesan error untuk ditampilkan
             $errorMessage = 'Terjadi kesalahan pada data yang diinput:';
-
             foreach ($errors as $field => $messages) {
-                // Tambahkan pesan kesalahan untuk setiap kolom yang gagal
                 $errorMessage .= "\n- " . ucfirst($field) . ": " . implode(', ', $messages);
             }
 
             // Tampilkan pesan error menggunakan SweetAlert
             Alert::error('Error', $errorMessage);
-
             return back()->withInput()->withErrors($errors);  // Kembali ke halaman dengan input dan error
         } catch (\Throwable $th) {
             // Tangkap error lainnya dan log

@@ -178,7 +178,7 @@
                                         <div class="flex items-center">
                                             <div class="w-full">
                                                 <label for="LuasLantai" class="block mb-2 text-xs font-medium text-black">
-                                                    Luas Lantai Bangunan Tempat Tinggal (m^2)
+                                                    Luas Lantai Bangunan Tempat Tinggal (m²)
                                                 </label>
                                                 <input
                                                     type="text"

@@ -12,7 +12,7 @@
         <!-- Styles / Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-blue-100 ">
+    <body class="mx-auto bg-blue-100">
 
         @include('sweetalert::alert')
 
@@ -34,7 +34,7 @@
                     @include('components.sidebar')
                 </aside>
 
-                <div class="relative flex-1 px-8 rounded-2xl">
+                <main class="relative flex-1 px-8 rounded-2xl">
                     <!-- Header Section -->
                     <div class="flex items-center justify-between px-4 mt-4 text-blue-950">
                         <!-- Judul -->
@@ -199,7 +199,7 @@
                         </div>
                     </div>
 
-                </div>
+                </main>
 
             </div>
             @include('components.footer')

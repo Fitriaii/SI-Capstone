@@ -161,7 +161,7 @@
                                         </td>
                                         <!-- Data Lain -->
                                         <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataAset->NomorKK }}</td>
-                                        <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataAset->NamaKepalaKeluarga }}</td>
+                                        <td class="px-6 py-4 text-xs font-medium text-center text-black break-words whitespace-normal">{{ $dataAset->NamaKepalaKeluarga }}</td>
                                         <td class="px-6 py-4 text-xs font-medium text-left text-black whitespace-nowrap">
                                             <ul class="pl-4 list-disc">
                                                 @foreach (['TabungGas', 'EmasPerhiasan', 'PerahuMotor', 'LemariEs', 'KomputerLaptopTablet', 'Smartphone', 'AC', 'SepedaMotor', 'LahanLain', 'PemanasAir', 'Sepeda', 'RumahLain', 'TeleponRumah', 'Mobil', 'TelevisiLayarDatar', 'Perahu'] as $column)

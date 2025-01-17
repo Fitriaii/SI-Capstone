@@ -11,7 +11,18 @@ return [
         'numeric' => 'Kolom :attribute tidak boleh lebih dari :max.',
         'string' => 'Kolom :attribute tidak boleh lebih dari :max karakter.',
     ],
-    'digits' => 'Kolom :atribute tidak boleh lebih dan kurang dari 16',
+    'custom' => [
+        'NomorKK' => [
+            'digits' => 'Kolom :attribute harus terdiri dari tepat 16 digit.',
+        ],
+        'IdLandmarkWilkerStat' => [
+            'alpha_num' => 'Kolom :attribute hanya boleh berisi huruf dan angka.',
+            'size' => 'Kolom :attribute harus terdiri dari tepat 6 karakter.',
+            'required' => 'Kolom :attribute wajib diisi.',
+        ],
+    ],
+
+    'integer' => 'Kolom :attribute harus diisi dengan angka.',
     'confirmed' => 'Konfirmasi :attribute tidak cocok.',
     'unique' => ':Attribute sudah digunakan.',
 

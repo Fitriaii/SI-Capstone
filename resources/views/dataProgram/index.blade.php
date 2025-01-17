@@ -159,7 +159,7 @@
                                         </td>
                                         <!-- Data Lain -->
                                         <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataProgram->NomorKK }}</td>
-                                        <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataProgram->NamaKepalaKeluarga }}</td>
+                                        <td class="px-6 py-4 text-xs font-medium text-center text-black break-words whitespace-normal">{{ $dataProgram->NamaKepalaKeluarga }}</td>
                                         <td class="px-6 py-4 text-xs font-medium text-left text-black whitespace-nowrap">
                                             <ul class="pl-4 list-disc">
                                                 @foreach ([

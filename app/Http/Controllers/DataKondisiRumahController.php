@@ -82,34 +82,39 @@ class DataKondisiRumahController extends Controller
             // Validasi data input
             $validatedData = $request->validate([
                 'NomorKK' => 'required|numeric|digits:16',
-                'NamaKepalaKeluarga' => 'required|string|max:100',
-                'StatusKepemilikanBangunan' => 'required|string|max:50',
-                'BuktiKepemilikan' => 'nullable|string|max:255',
-                'LuasLantai' => 'required|numeric|min:0',
-                'JenisLantai' => 'required|string|max:50',
-                'JenisDindingTerluas' => 'required|string|max:50',
-                'JenisAtapTerluas' => 'required|string|max:50',
-                'SumberAirMinum' => 'required|string|max:50',
-                'JarakSumberAirMinum' => 'nullable|numeric|min:0',
-                'SumberPeneranganUtama' => 'required|string|max:50',
-                'Meteran1' => 'nullable|string|max:255',
-                'Meteran2' => 'nullable|string|max:255',
-                'Meteran3' => 'nullable|string|max:255',
-                'BahanBakarEnergiMemasak' => 'required|string|max:50',
-                'KepemilikanBAB' => 'required|string|max:50',
-                'JenisKloset' => 'nullable|string|max:50',
-                'TempatPembuanganAkhirTinja' => 'required|string|max:50',
+                'NamaKepalaKeluarga' => 'required|string',
+                'StatusKepemilikanBangunan' => 'required|string',
+                'BuktiKepemilikan' => 'nullable|string',
+                'LuasLantai' => 'required|numeric',
+                'JenisLantai' => 'required|string',
+                'JenisDindingTerluas' => 'required|string',
+                'JenisAtapTerluas' => 'required|string',
+                'SumberAirMinum' => 'required|string',
+                'JarakSumberAirMinum' => 'nullable',
+                'SumberPeneranganUtama' => 'required|string',
+                'Meteran1' => 'nullable|string',
+                'Meteran2' => 'nullable|string',
+                'Meteran3' => 'nullable|string',
+                'BahanBakarEnergiMemasak' => 'required|string',
+                'KepemilikanBAB' => 'required|string',
+                'JenisKloset' => 'nullable|string',
+                'TempatPembuanganAkhirTinja' => 'required|string',
             ]);
 
+            if (DataBangunan::where('NomorKK', $validatedData['NomorKK'])->exists()) {
+                Alert::error('Gagal', 'Nomor KK sudah terdaftar.');
+                return back()->withInput();
+            }
             // Simpan data bangunan ke dalam tabel 'databangunan'
             $dataBangunan = DataBangunan::create($validatedData);
+
 
             // Log data yang berhasil disimpan (untuk debugging)
             Log::info('Data bangunan berhasil disimpan:', $dataBangunan->toArray());
 
             // Redirect dengan pesan sukses
-            return redirect()->route('bangunan.index') // Sesuaikan dengan route tujuan
-                ->with('success', 'Data bangunan berhasil ditambahkan.');
+            Alert::success('Sukses', 'Data bangunan berhasil disimpan.');
+            return redirect()->route('bangunan.index');
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Tangkap error validasi dan log pesan error
             Log::warning('Validasi gagal: ' . json_encode($e->errors()));
@@ -200,31 +205,25 @@ class DataKondisiRumahController extends Controller
                 'TempatPembuanganAkhirTinja' => 'required',
             ]);
 
-            // Temukan data bangunan berdasarkan ID atau parameter yang sesuai
-            $dataBangunan = DataBangunan::findOrFail($request->id); // Pastikan Anda memiliki ID untuk memperbarui data
+            // Pastikan Anda memiliki ID untuk memperbarui data
 
             // Update data ke dalam tabel 'databangunan'
             $dataBangunan->update($validatedData);
 
-            // Redirect dengan pesan sukses
-            return redirect()->route('bangunan.index') // Ganti dengan route tujuan setelah pembaruan
-                ->with('success', 'Data bangunan berhasil diperbarui.');
-
+            Alert::success('Sukses', 'Data bangunan berhasil diperbarui.');
+            return redirect()->route('bangunan.index');
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Tangkap error validasi dan tampilkan pesan error
-            $errors = $e->errors(); // Ambil semua pesan error
+            $errors = $e->errors(); // Mengambil semua pesan error
 
             // Buat pesan error untuk ditampilkan
             $errorMessage = 'Terjadi kesalahan pada data yang diinput:';
-
             foreach ($errors as $field => $messages) {
-                // Tambahkan pesan kesalahan untuk setiap kolom yang gagal
                 $errorMessage .= "\n- " . ucfirst($field) . ": " . implode(', ', $messages);
             }
 
             // Tampilkan pesan error menggunakan SweetAlert
             Alert::error('Error', $errorMessage);
-
             return back()->withInput()->withErrors($errors);
         } catch (\Throwable $th) {
             // Tangkap error dan log detailnya

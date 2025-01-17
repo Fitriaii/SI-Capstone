@@ -1,6 +1,6 @@
 <div class="flex">
     {{-- Sidebar --}}
-    <div class="fixed inset-y-0 left-0 z-30 w-64 text-white shadow-lg bg-blue-950"
+    <aside class="fixed inset-y-0 left-0 z-30 w-64 text-white shadow-lg bg-blue-950"
         x-data="{ open: true, activeRoute: '{{ Request::path() }}' }"
         :class="{ 'translate-x-0': open, '-translate-x-full': !open }">
 
@@ -149,5 +149,5 @@
             </div>
         </nav>
 
-    </div>
+    </aside>
 </div>

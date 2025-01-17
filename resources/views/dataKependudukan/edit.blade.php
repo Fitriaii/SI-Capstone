@@ -224,7 +224,7 @@
                                                     <option value="Daratan 1" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Daratan 1' ? 'selected' : '' }}>Daratan 1</option>
                                                     <option value="Daratan 2" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Daratan 2' ? 'selected' : '' }}>Daratan 2</option>
                                                     <option value="Daratan 3" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Daratan 3' ? 'selected' : '' }}>Daratan 3</option>
-                                                    <option value="Jonggaran" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Jonggrangan' ? 'selected' : '' }}>Jonggrangan</option>
+                                                    <option value="Jonggrangan" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Jonggrangan' ? 'selected' : '' }}>Jonggrangan</option>
                                                     <option value="Soromintan" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Soromintan' ? 'selected' : '' }}>Soromintan</option>
                                                     <option value="Kerdan" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Kerdan' ? 'selected' : '' }}>Kerdan</option>
                                                     <option value="Kebitan" {{ old('Padukuhan', isset($dataKeluarga) ? $dataKeluarga->Padukuhan : '') == 'Kebitan' ? 'selected' : '' }}>Kebitan</option>

@@ -112,14 +112,18 @@ class DataAsetController extends Controller
                 'Smartphone' => 'nullable|string|in:Ya,Tidak',
                 'LahanLain' => 'nullable|string|in:Ya,Tidak',
                 'RumahLain' => 'nullable|string|in:Ya,Tidak',
-                'Sapi' => 'nullable|integer|min:0',
-                'Kerbau' => 'nullable|integer|min:0',
-                'Kuda' => 'nullable|integer|min:0',
-                'Babi' => 'nullable|integer|min:0',
-                'Kambing' => 'nullable|integer|min:0',
+                'Sapi' => 'nullable|integer',
+                'Kerbau' => 'nullable|integer',
+                'Kuda' => 'nullable|integer',
+                'Babi' => 'nullable|integer',
+                'Kambing' => 'nullable|integer',
             ]);
 
-            // Simpan data ke database
+            if (DataAset::where('NomorKK', $validatedData['NomorKK'])->exists()) {
+                Alert::error('Gagal', 'Nomor KK sudah terdaftar.');
+                return back()->withInput();
+            }
+
             $dataAset = DataAset::create($validatedData);
 
             // Log data yang berhasil disimpan

@@ -86,7 +86,11 @@ class DataLayananController extends Controller
                 'KepemilikanRekeningEWallet' => 'required|string', // Validasi hanya menerima "Ya" atau "Tidak"
             ]);
 
-            // Simpan data ke dalam tabel 'datalayanan'
+            if (DataLayanan::where('NomorKK', $validatedData['NomorKK'])->exists()) {
+                Alert::error('Gagal', 'Nomor KK sudah terdaftar.');
+                return back()->withInput();
+            }
+            
             $dataLayanan = DataLayanan::create($validatedData);
 
             // Log data yang berhasil disimpan

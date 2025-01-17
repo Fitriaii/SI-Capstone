@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>Data Kependudukan</title>
 
@@ -11,7 +11,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-blue-100">
+    <body class="mx-auto bg-blue-100">
 
         @include('sweetalert::alert')
 
@@ -26,21 +26,22 @@
         </nav>
 
         <div class="flex flex-col min-h-screen pt-20">
+
             <!-- Navbar -->
             <div class="flex min-h-screen">
 
-                <aside class="w-64">
+                <aside id="sidebar" class="w-64 ">
                     @include('components.sidebar')
                 </aside>
 
-                <div class="relative flex-1 px-8 rounded-2xl">
+                <main id="main-content" class="flex-1 px-8 mt-16 transition-all lg:ml-64 lg:mt-0 sm:w-auto">
                     <!-- Header Section -->
                     <div class="flex items-center justify-between px-4 mt-4 text-blue-950">
                         <!-- Judul -->
-                        <h1 class="text-xl font-semibold whitespace-nowrap">Data Kependudukan</h1>
+                        <h1 class="text-xl font-semibold whitespace-nowrap sm:text-lg md:text-xl lg:text-2xl">Data Kependudukan</h1>
 
                         <!-- Filter dan Pencarian -->
-                        <div class="flex items-center space-x-4">
+                        <div class="flex items-center w-full space-x-4 sm:w-auto">
                             <!-- Filter Padukuhan -->
                             <form id="filterForm" action="{{ route('penduduk.index') }}" method="GET">
                                 <div class="flex items-center space-x-4">
@@ -102,7 +103,7 @@
                     </div>
 
                     <!-- Main Section -->
-                    <div class="px-4 mt-4">
+                    <div class="px-4 mt-4 sm:w-auto">
                         <!-- Tombol -->
                         <div class="flex items-center space-x-4">
                             <!-- Form Tambah Data -->
@@ -134,7 +135,7 @@
                         </div>
                     </div>
 
-                    <div class="justify-start w-full px-4 mt-4 mb-8 border-b border-gray-200 shadow-sm">
+                    <div class="justify-start w-full px-4 mt-4 mb-8 border-b border-gray-200 shadow-sm sm:w-auto">
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
                                 <thead class="sticky top-0 border-b border-gray-200 rounded-lg bg-gray-50">
@@ -157,11 +158,11 @@
                                             {{ ($keluarga->currentPage() - 1) * $keluarga->perPage() + $loop->iteration }}
                                         </td>
                                         <!-- Data Lain -->
-                                        <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataKeluarga->NomorKK }}</td>
-                                        <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataKeluarga->NamaKepalaKeluarga }}</td>
-                                        <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataKeluarga->Padukuhan }}</td>
-                                        <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataKeluarga->JumlahAnggotaKeluarga }}</td>
-                                        <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">{{ $dataKeluarga->Alamat }}</td>
+                                        <td class="px-6 py-4 text-xs font-medium text-center text-black break-words whitespace-nowrap">{{ $dataKeluarga->NomorKK }}</td>
+                                        <td class="px-6 py-4 text-xs font-medium text-center text-black break-words whitespace-normal">{{ $dataKeluarga->NamaKepalaKeluarga }}</td>
+                                        <td class="px-6 py-4 text-xs font-medium text-center text-black break-words whitespace-nowrap">{{ $dataKeluarga->Padukuhan }}</td>
+                                        <td class="px-6 py-4 text-xs font-medium text-center text-black break-words whitespace-nowrap">{{ $dataKeluarga->JumlahAnggotaKeluarga }}</td>
+                                        <td class="px-6 py-4 text-xs font-medium text-center text-black break-words whitespace-normal">{{ $dataKeluarga->Alamat }}</td>
                                         <!-- Aksi -->
                                         <td class="px-6 py-4 text-xs font-medium text-center text-black whitespace-nowrap">
                                             <div class="flex justify-center gap-2">
@@ -195,12 +196,13 @@
                             </table>
                         </div>
 
-                        <!-- Navigasi Paginasi -->
-                        <div class="mt-4">
-                            {{ $keluarga->links('components.pagination') }}
-                        </div>
+
                     </div>
-                </div>
+                    <!-- Navigasi Paginasi -->
+                    <div class="mt-4">
+                        {{ $keluarga->links('components.pagination') }}
+                    </div>
+                </main>
             </div>
             @include('components.footer')
         </div>
@@ -251,7 +253,6 @@
                 });
             });
         </script>
-
     </body>
 
 </html>

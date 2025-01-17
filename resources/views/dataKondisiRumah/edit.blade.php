@@ -140,7 +140,13 @@
                                     <div
                                         x-data="{
                                             statusKepemilikan: '{{ old('StatusKepemilikanBangunan', $dataBangunan->StatusKepemilikanBangunan ?? '') }}',
-                                            isBuktiKepemilikanEnabled: '{{ old('StatusKepemilikanBangunan', $dataBangunan->StatusKepemilikanBangunan ?? '') }}' === 'Milik sendiri'
+                                            buktiKepemilikan: '{{ old('BuktiKepemilikan', $dataBangunan->BuktiKepemilikan ?? '') }}',
+                                            isBuktiKepemilikanEnabled: '{{ old('StatusKepemilikanBangunan', $dataBangunan->StatusKepemilikanBangunan ?? '') }}' === 'Milik sendiri',
+                                            resetBuktiKepemilikan() {
+                                                if (this.statusKepemilikan !== 'Milik sendiri') {
+                                                    this.buktiKepemilikan = '';
+                                                }
+                                            }
                                         }"
                                         class="grid grid-cols-2 gap-4"
                                     >
@@ -154,7 +160,10 @@
                                                     id="StatusKepemilikanBangunan"
                                                     name="StatusKepemilikanBangunan"
                                                     x-model="statusKepemilikan"
-                                                    @change="isBuktiKepemilikanEnabled = (statusKepemilikan === 'Milik sendiri')"
+                                                    @change="
+                                                        isBuktiKepemilikanEnabled = (statusKepemilikan === 'Milik sendiri');
+                                                        resetBuktiKepemilikan();
+                                                    "
                                                     class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
                                                 >
                                                     <option value="" disabled>Pilih Status Kepemilikan</option>
@@ -179,16 +188,17 @@
                                                 <select
                                                     id="BuktiKepemilikan"
                                                     name="BuktiKepemilikan"
+                                                    x-model="buktiKepemilikan"
                                                     x-bind:disabled="!isBuktiKepemilikanEnabled"
                                                     class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600 disabled:bg-gray-200 disabled:cursor-not-allowed"
                                                 >
                                                     <option value="" disabled selected>Pilih Bukti Kepemilikan</option>
-                                                    <option value="SHM atas nama anggota keluarga" {{ old('BuktiKepemilikan', $dataBangunan->BuktiKepemilikan ?? '') == 'SHM atas nama anggota keluarga' ? 'selected' : '' }}>1. SHM atas nama anggota keluarga</option>
-                                                    <option value="SHM bukan anggota keluarga dengan perjanjian pemanfaatan tertulis" {{ old('BuktiKepemilikan', $dataBangunan->BuktiKepemilikan ?? '') == 'SHM bukan anggota keluarga dengan perjanjian pemanfaatan tertulis' ? 'selected' : '' }}>2. SHM bukan anggota keluarga dengan perjanjian pemanfaatan tertulis</option>
-                                                    <option value="SHM bukan a.n anggota keluarga tanpa perjanjian pemanfaatan tertulis" {{ old('BuktiKepemilikan', $dataBangunan->BuktiKepemilikan ?? '') == 'SHM bukan a.n anggota keluarga tanpa perjanjian pemanfaatan tertulis' ? 'selected' : '' }}>3. SHM bukan a.n anggota keluarga tanpa perjanjian pemanfaatan tertulis</option>
-                                                    <option value="Sertifikat selain SHM(SHGB, SHSRS)" {{ old('BuktiKepemilikan', $dataBangunan->BuktiKepemilikan ?? '') == 'Sertifikat selain SHM(SHGB, SHSRS)' ? 'selected' : '' }}>4. Sertifikat selain SHM(SHGB, SHSRS)</option>
-                                                    <option value="Surat Bukti Lainnya (Girik,Letter C, dll)" {{ old('BuktiKepemilikan', $dataBangunan->BuktiKepemilikan ?? '') == 'Surat Bukti Lainnya (Girik,Letter C, dll)' ? 'selected' : '' }}>4. Surat Bukti Lainnya (Girik,Letter C, dll)</option>
-                                                    <option value="Tidak punya" {{ old('BuktiKepemilikan', $dataBangunan->BuktiKepemilikan ?? '') == 'Tidak punya' ? 'selected' : '' }}>5. Tidak punya</option>
+                                                    <option value="SHM atas nama anggota keluarga">1. SHM atas nama anggota keluarga</option>
+                                                    <option value="SHM bukan anggota keluarga dengan perjanjian pemanfaatan tertulis">2. SHM bukan anggota keluarga dengan perjanjian pemanfaatan tertulis</option>
+                                                    <option value="SHM bukan a.n anggota keluarga tanpa perjanjian pemanfaatan tertulis">3. SHM bukan a.n anggota keluarga tanpa perjanjian pemanfaatan tertulis</option>
+                                                    <option value="Sertifikat selain SHM(SHGB, SHSRS)">4. Sertifikat selain SHM(SHGB, SHSRS)</option>
+                                                    <option value="Surat Bukti Lainnya (Girik,Letter C, dll)">5. Surat Bukti Lainnya (Girik,Letter C, dll)</option>
+                                                    <option value="Tidak punya">6. Tidak punya</option>
                                                 </select>
                                                 @error('BuktiKepemilikan')
                                                     <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
@@ -198,12 +208,13 @@
                                     </div>
 
 
+
                                     <!-- Kecamatan & Nomor Urut Keluarga Hasil Verifikasi -->
                                     <div class="grid grid-cols-2 gap-4">
                                         <div class="flex items-center">
                                             <div class="w-full">
                                                 <label for="LuasLantai" class="block mb-2 text-xs font-medium text-black">
-                                                    Luas Lantai Bangunan Tempat Tinggal (m^2)
+                                                    Luas Lantai Bangunan Tempat Tinggal (m²)
                                                 </label>
                                                 <input
                                                     type="text"
@@ -307,11 +318,17 @@
                                     <div
                                         x-data="{
                                             sumberAirMinum: '{{ old('SumberAirMinum', $dataBangunan->SumberAirMinum ?? '') }}',
-                                            isJarakDisabled: !['Sumur bor/pompa', 'Sumur terlindung', 'Sumur tak terlindung', 'Mata air terlindung', 'Mata air tak terlindung'].includes('{{ old('SumberAirMinum', $dataBangunan->SumberAirMinum ?? '') }}')
+                                            jarakSumberAirMinum: '{{ old('JarakSumberAirMinum', $dataBangunan->JarakSumberAirMinum ?? '') }}',
+                                            isJarakDisabled: !['Sumur bor/pompa', 'Sumur terlindung', 'Sumur tak terlindung', 'Mata air terlindung', 'Mata air tak terlindung'].includes('{{ old('SumberAirMinum', $dataBangunan->SumberAirMinum ?? '') }}'),
+                                            resetJarakSumberAirMinum() {
+                                                if (this.isJarakDisabled) {
+                                                    this.jarakSumberAirMinum = '';
+                                                }
+                                            }
                                         }"
                                         class="grid grid-cols-2 gap-4"
                                     >
-                                        <!-- Sumber Air Minum -->
+                                        <!-- Dropdown Sumber Air Minum -->
                                         <div class="flex items-center">
                                             <div class="w-full">
                                                 <label for="SumberAirMinum" class="block mb-2 text-xs font-medium text-black">
@@ -321,7 +338,10 @@
                                                     id="SumberAirMinum"
                                                     name="SumberAirMinum"
                                                     x-model="sumberAirMinum"
-                                                    @change="isJarakDisabled = !['Sumur bor/pompa', 'Sumur terlindung', 'Sumur tak terlindung', 'Mata air terlindung', 'Mata air tak terlindung'].includes(sumberAirMinum)"
+                                                    @change="
+                                                        isJarakDisabled = !['Sumur bor/pompa', 'Sumur terlindung', 'Sumur tak terlindung', 'Mata air terlindung', 'Mata air tak terlindung'].includes(sumberAirMinum);
+                                                        resetJarakSumberAirMinum();
+                                                    "
                                                     class="block w-full p-1 px-4 py-2 text-xs placeholder-gray-400 border border-gray-300 rounded appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                                 >
                                                     <option value="" class="text-gray-500" hidden>Pilih Sumber Air Minum</option>
@@ -343,7 +363,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- Jarak Sumber Air Minum -->
+                                        <!-- Dropdown Jarak Sumber Air Minum -->
                                         <div class="flex items-center">
                                             <div class="w-full">
                                                 <label for="JarakSumberAirMinum" class="block mb-2 text-xs font-medium text-black">
@@ -352,6 +372,7 @@
                                                 <select
                                                     id="JarakSumberAirMinum"
                                                     name="JarakSumberAirMinum"
+                                                    x-model="jarakSumberAirMinum"
                                                     x-bind:disabled="isJarakDisabled"
                                                     class="block w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600 disabled:bg-gray-200 disabled:cursor-not-allowed"
                                                 >
@@ -367,8 +388,10 @@
                                         </div>
                                     </div>
 
+
                                     <!-- Kode SLS/Non SLS & ID Landmark Wilkerstat -->
                                     <div class="grid grid-cols-2 gap-4">
+                                        <!-- Sumber Penerangan Utama -->
                                         <div class="flex items-center">
                                             <div class="w-full">
                                                 <label for="SumberPeneranganUtama" class="block mb-2 text-xs font-medium text-black">
@@ -379,13 +402,20 @@
                                                     name="SumberPeneranganUtama"
                                                     class="w-full px-4 py-2 mt-1 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-600 focus:border-gray-600"
                                                     onchange="toggleMeteranInputs()"
-                                                    data-initial-value="{{ old('SumberPeneranganUtama', isset($dataBangunan) ? $dataBangunan->SumberPeneranganUtama : '') }}"
                                                 >
                                                     <option value="" class="text-gray-500" hidden>Pilih Sumber Penerangan Utama</option>
-                                                    <option value="Listrik PLN dengan meteran" {{ old('SumberPeneranganUtama', isset($dataBangunan) ? $dataBangunan->SumberPeneranganUtama : '') == 'Listrik PLN dengan meteran' ? 'selected' : '' }}>1. Listrik PLN dengan meteran</option>
-                                                    <option value="Listrik PLN tanpa meteran" {{ old('SumberPeneranganUtama', isset($dataBangunan) ? $dataBangunan->SumberPeneranganUtama : '') == 'Listrik PLN tanpa meteran' ? 'selected' : '' }}>2. Listrik PLN tanpa meteran</option>
-                                                    <option value="Listrik Non PLN" {{ old('SumberPeneranganUtama', isset($dataBangunan) ? $dataBangunan->SumberPeneranganUtama : '') == 'Listrik Non PLN' ? 'selected' : '' }}>3. Listrik Non PLN</option>
-                                                    <option value="Bukan Listrik" {{ old('SumberPeneranganUtama', isset($dataBangunan) ? $dataBangunan->SumberPeneranganUtama : '') == 'Bukan Listrik' ? 'selected' : '' }}>4. Bukan Listrik</option>
+                                                    <option value="Listrik PLN dengan meteran" {{ old('SumberPeneranganUtama', $dataBangunan->SumberPeneranganUtama ?? '') == 'Listrik PLN dengan meteran' ? 'selected' : '' }}>
+                                                        1. Listrik PLN dengan meteran
+                                                    </option>
+                                                    <option value="Listrik PLN tanpa meteran" {{ old('SumberPeneranganUtama', $dataBangunan->SumberPeneranganUtama ?? '') == 'Listrik PLN tanpa meteran' ? 'selected' : '' }}>
+                                                        2. Listrik PLN tanpa meteran
+                                                    </option>
+                                                    <option value="Listrik Non PLN" {{ old('SumberPeneranganUtama', $dataBangunan->SumberPeneranganUtama ?? '') == 'Listrik Non PLN' ? 'selected' : '' }}>
+                                                        3. Listrik Non PLN
+                                                    </option>
+                                                    <option value="Bukan Listrik" {{ old('SumberPeneranganUtama', $dataBangunan->SumberPeneranganUtama ?? '') == 'Bukan Listrik' ? 'selected' : '' }}>
+                                                        4. Bukan Listrik
+                                                    </option>
                                                 </select>
                                                 @error('SumberPeneranganUtama')
                                                     <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
@@ -393,6 +423,7 @@
                                             </div>
                                         </div>
 
+                                        <!-- Daya Yang Terpasang -->
                                         <div class="p-2 rounded bg-blue-50">
                                             <h3 class="mb-2 text-xs font-medium text-black">
                                                 Daya Yang Terpasang <i>(*Jika Sumber Penerangan Utama Berkode 1)</i>
@@ -407,13 +438,12 @@
                                                         class="w-full px-4 py-2 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-500 focus:border-blue-500"
                                                     >
                                                         <option value="" disabled selected>Pilih Daya</option>
-                                                        <option value="450 watt" {{ old('Meteran1', isset($dataBangunan) ? $dataBangunan->Meteran1 : '') == '450 watt' ? 'selected' : '' }}>1. 450 watt</option>
-                                                        <option value="900 watt" {{ old('Meteran1', isset($dataBangunan) ? $dataBangunan->Meteran1 : '') == '900 watt' ? 'selected' : '' }}>2. 900 watt</option>
-                                                        <option value="1.300 watt" {{ old('Meteran1', isset($dataBangunan) ? $dataBangunan->Meteran1 : '') == '1.300 watt' ? 'selected' : '' }}>3. 1.300 watt</option>
-                                                        <option value="2.200 watt" {{ old('Meteran1', isset($dataBangunan) ? $dataBangunan->Meteran1 : '') == '2.200 watt' ? 'selected' : '' }}>4. 2.200 watt</option>
-                                                        <option value=">2.200 watt" {{ old('Meteran1', isset($dataBangunan) ? $dataBangunan->Meteran1 : '') == '>2.200 watt' ? 'selected' : '' }}>5. >2.200 watt</option>
+                                                        <option value="450 watt" {{ old('Meteran1', $dataBangunan->Meteran1 ?? '') == '450 watt' ? 'selected' : '' }}>1. 450 watt</option>
+                                                        <option value="900 watt" {{ old('Meteran1', $dataBangunan->Meteran1 ?? '') == '900 watt' ? 'selected' : '' }}>2. 900 watt</option>
+                                                        <option value="1.300 watt" {{ old('Meteran1', $dataBangunan->Meteran1 ?? '') == '1.300 watt' ? 'selected' : '' }}>3. 1.300 watt</option>
+                                                        <option value="2.200 watt" {{ old('Meteran1', $dataBangunan->Meteran1 ?? '') == '2.200 watt' ? 'selected' : '' }}>4. 2.200 watt</option>
+                                                        <option value=">2.200 watt" {{ old('Meteran1', $dataBangunan->Meteran1 ?? '') == '>2.200 watt' ? 'selected' : '' }}>5. >2.200 watt</option>
                                                     </select>
-
                                                 </div>
 
                                                 <!-- Meteran 2 -->
@@ -425,13 +455,12 @@
                                                         class="w-full px-4 py-2 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-500 focus:border-blue-500"
                                                     >
                                                         <option value="" disabled selected>Pilih Daya</option>
-                                                        <option value="450 watt" {{ old('Meteran2', isset($dataBangunan) ? $dataBangunan->Meteran2 : '') == '450 watt' ? 'selected' : '' }}>1. 450 watt</option>
-                                                        <option value="900 watt" {{ old('Meteran2', isset($dataBangunan) ? $dataBangunan->Meteran2 : '' ) == '900 watt' ? 'selected' : '' }}>2. 900 watt</option>
-                                                        <option value="1.300 watt" {{ old('Meteran2', isset($dataBangunan) ? $dataBangunan->Meteran2 : '') == '1.300 watt' ? 'selected' : '' }}>3. 1.300 watt</option>
-                                                        <option value="2.200 watt" {{ old('Meteran2', isset($dataBangunan) ? $dataBangunan->Meteran2 : '') == '2.200 watt' ? 'selected' : '' }}>4. 2.200 watt</option>
-                                                        <option value=">2.200 watt" {{ old('Meteran2', isset($dataBangunan) ? $dataBangunan->Meteran2 : '') == '>2.200 watt' ? 'selected' : '' }}>5. >2.200 watt</option>
+                                                        <option value="450 watt" {{ old('Meteran2', $dataBangunan->Meteran2 ?? '') == '450 watt' ? 'selected' : '' }}>1. 450 watt</option>
+                                                        <option value="900 watt" {{ old('Meteran2', $dataBangunan->Meteran2 ?? '') == '900 watt' ? 'selected' : '' }}>2. 900 watt</option>
+                                                        <option value="1.300 watt" {{ old('Meteran2', $dataBangunan->Meteran2 ?? '') == '1.300 watt' ? 'selected' : '' }}>3. 1.300 watt</option>
+                                                        <option value="2.200 watt" {{ old('Meteran2', $dataBangunan->Meteran2 ?? '') == '2.200 watt' ? 'selected' : '' }}>4. 2.200 watt</option>
+                                                        <option value=">2.200 watt" {{ old('Meteran2', $dataBangunan->Meteran2 ?? '') == '>2.200 watt' ? 'selected' : '' }}>5. >2.200 watt</option>
                                                     </select>
-
                                                 </div>
 
                                                 <!-- Meteran 3 -->
@@ -443,17 +472,17 @@
                                                         class="w-full px-4 py-2 text-xs bg-white border border-gray-300 rounded outline-none hover:border-gray-500 focus:border-blue-500"
                                                     >
                                                         <option value="" disabled selected>Pilih Daya</option>
-                                                        <option value="450 watt" {{ old('Meteran3', isset($dataBangunan) ? $dataBangunan->Meteran3 : '') == '450 watt' ? 'selected' : '' }}>1. 450 watt</option>
-                                                        <option value="900 watt" {{ old('Meteran3', isset($dataBangunan) ? $dataBangunan->Meteran3 : '') == '900 watt' ? 'selected' : '' }}>2. 900 watt</option>
-                                                        <option value="1.300 watt" {{ old('Meteran3', isset($dataBangunan) ? $dataBangunan->Meteran3 : '') == '1.300 watt' ? 'selected' : '' }}>3. 1.300 watt</option>
-                                                        <option value="2.200 watt" {{ old('Meteran3', isset($dataBangunan) ? $dataBangunan->Meteran3 : '') == '2.200 watt' ? 'selected' : '' }}>4. 2.200 watt</option>
-                                                        <option value=">2.200 watt" {{ old('Meteran3', isset($dataBangunan) ? $dataBangunan->Meteran3 : '') == '>2.200 watt' ? 'selected' : '' }}>5. >2.200 watt</option>
+                                                        <option value="450 watt" {{ old('Meteran3', $dataBangunan->Meteran3 ?? '') == '450 watt' ? 'selected' : '' }}>1. 450 watt</option>
+                                                        <option value="900 watt" {{ old('Meteran3', $dataBangunan->Meteran3 ?? '') == '900 watt' ? 'selected' : '' }}>2. 900 watt</option>
+                                                        <option value="1.300 watt" {{ old('Meteran3', $dataBangunan->Meteran3 ?? '') == '1.300 watt' ? 'selected' : '' }}>3. 1.300 watt</option>
+                                                        <option value="2.200 watt" {{ old('Meteran3', $dataBangunan->Meteran3 ?? '') == '2.200 watt' ? 'selected' : '' }}>4. 2.200 watt</option>
+                                                        <option value=">2.200 watt" {{ old('Meteran3', $dataBangunan->Meteran3 ?? '') == '>2.200 watt' ? 'selected' : '' }}>5. >2.200 watt</option>
                                                     </select>
-
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
 
                                     <!-- Bahan Bakar/Energi Utama Untuk Memasak & Tempat Pembuangan Akhir Tinja -->
                                     <div class="grid grid-cols-2 gap-4">
@@ -637,16 +666,23 @@
 
             function toggleMeteranInputs() {
                 const sumberPenerangan = document.getElementById('SumberPeneranganUtama').value;
-                const initialValue = document.getElementById('SumberPeneranganUtama').dataset.initialValue;
                 const meteran1 = document.getElementById('Meteran1');
                 const meteran2 = document.getElementById('Meteran2');
                 const meteran3 = document.getElementById('Meteran3');
 
-                const isPLN = sumberPenerangan === "Listrik PLN dengan meteran" || initialValue === "Listrik PLN dengan meteran";
+                const isPLN = sumberPenerangan === "Listrik PLN dengan meteran";
 
+                // Enable or disable meteran inputs
                 meteran1.disabled = !isPLN;
                 meteran2.disabled = !isPLN;
                 meteran3.disabled = !isPLN;
+
+                // Reset values if not PLN
+                if (!isPLN) {
+                    meteran1.value = "";
+                    meteran2.value = "";
+                    meteran3.value = "";
+                }
             }
 
             // Run on page load
